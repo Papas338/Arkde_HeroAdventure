@@ -6,7 +6,6 @@
 #include "GameFramework/Character.h"
 #include "HA_Character.generated.h"
 
-class USceneComponent;
 class UCameraComponent;
 class USpringArmComponent;
 
@@ -20,7 +19,6 @@ public:
 	AHA_Character();
 
 //Components
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UCameraComponent* TPSCameraComponent;
 
@@ -32,6 +30,18 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Aiming")
 	bool bIsLookInverted;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement")
+	float ImpulseStrenght;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
+	FVector MovementDirection;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
+	FVector ForwardImpulseVector;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
+	FVector RightImpulseVector;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -42,7 +52,7 @@ protected:
 	void MoveForward(float value);
 	void MoveRight(float value);
 
-	void Evade(float value);
+	void Evade();
 
 public:	
 	// Called every frame
