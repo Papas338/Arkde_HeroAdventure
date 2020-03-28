@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "HA_Character.generated.h"
 
+class USceneComponent;
 class UCameraComponent;
 class USpringArmComponent;
 
@@ -19,7 +20,7 @@ public:
 	AHA_Character();
 
 //Components
-protected:
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UCameraComponent* TPSCameraComponent;
 
@@ -40,6 +41,8 @@ protected:
 
 	void MoveForward(float value);
 	void MoveRight(float value);
+
+	void Evade(float value);
 
 public:	
 	// Called every frame

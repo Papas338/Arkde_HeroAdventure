@@ -3,7 +3,7 @@
 
 #include "HA_Character.h"
 #include "Camera/CameraComponent.h"
-#include "GameFramework//SpringArmComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 
 // Sets default values
 AHA_Character::AHA_Character()
@@ -53,6 +53,7 @@ void AHA_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AHA_Character::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &AHA_Character::StopJumping);
 	
+	PlayerInputComponent->BindAxis("Evade", this, &AHA_Character::Evade);
 }
 
 void AHA_Character::Jump()
@@ -73,4 +74,9 @@ void AHA_Character::MoveForward(float value)
 void AHA_Character::MoveRight(float value)
 {
 	AddMovementInput(GetActorRightVector() * value);
+}
+
+void AHA_Character::Evade(float value)
+{
+	AddMovementInput(GetActorForwardVector() * value * 100);
 }
