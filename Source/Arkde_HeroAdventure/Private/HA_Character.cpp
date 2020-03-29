@@ -31,6 +31,9 @@ void AHA_Character::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	MovementDirection = (ForwardMovementVector + RightMovementVector) / 2;
+
+	SetPlayerRotation();
 }
 
 // Called to bind functionality to input
@@ -68,18 +71,25 @@ void AHA_Character::StopJumping()
 
 void AHA_Character::MoveForward(float value)
 {
-	ForwardImpulseVector = GetActorForwardVector() * value;
-	AddMovementInput(GetActorForwardVector() * value);
+	ForwardMovementVector = GetActorForwardVector() * value;
+	AddMovementInput(ForwardMovementVector);
 }
 
 void AHA_Character::MoveRight(float value)
 {
-	RightImpulseVector = GetActorRightVector() * value;
-	AddMovementInput(GetActorRightVector() * value);
+	RightMovementVector = GetActorRightVector() * value;
+	AddMovementInput(RightMovementVector);
 }
 
 void AHA_Character::Evade()
 {
-	MovementDirection = (ForwardImpulseVector + RightImpulseVector)/2;
 	LaunchCharacter(MovementDirection * 1000 * ImpulseStrenght, false, false);
+}
+
+void AHA_Character::SetPlayerRotation()
+{
+	if (!MovementDirection.IsZero()) {
+		PlayerRotation = MovementDirection.Rotation() + FRotator(0, -90, 0);
+		GetMesh()->SetWorldRotation(PlayerRotation);
+	}
 }

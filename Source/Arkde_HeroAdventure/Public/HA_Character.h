@@ -37,10 +37,13 @@ protected:
 	FVector MovementDirection;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
-	FVector ForwardImpulseVector;
+	FVector ForwardMovementVector;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
-	FVector RightImpulseVector;
+	FVector RightMovementVector;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
+	FRotator PlayerRotation;
 
 protected:
 	// Called when the game starts or when spawned
@@ -53,6 +56,8 @@ protected:
 	void MoveRight(float value);
 
 	void Evade();
+
+	void SetPlayerRotation();
 
 public:	
 	// Called every frame
