@@ -8,9 +8,9 @@
 // Sets default values
 AHA_Character::AHA_Character()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-			
+
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring_Arm_Component"));
 	SpringArmComponent->bUsePawnControlRotation = true;
 	SpringArmComponent->SetupAttachment(RootComponent);
@@ -23,7 +23,7 @@ AHA_Character::AHA_Character()
 void AHA_Character::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame
@@ -44,6 +44,10 @@ void AHA_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAxis("MoveForward", this, &AHA_Character::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AHA_Character::MoveRight);
 
+	//Execute action
+	PlayerInputComponent->BindAction("Action", IE_Pressed, this, &AHA_Character::ExecutingAction);
+	PlayerInputComponent->BindAction("Action", IE_Released, this, &AHA_Character::StopAction);
+
 	//Player camera
 	PlayerInputComponent->BindAxis("LookVertical", this, &AHA_Character::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookHorizontal", this, &ACharacter::AddControllerYawInput);
@@ -51,13 +55,17 @@ void AHA_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	//Jump
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AHA_Character::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &AHA_Character::StopJumping);
-	
+
+	//Evade
 	PlayerInputComponent->BindAction("Evade", IE_Pressed, this, &AHA_Character::Evade);
+		
 }
 
 void AHA_Character::AddControllerPitchInput(float value) {
 	Super::AddControllerPitchInput(bIsLookInverted ? value : -value);
 }
+
+
 
 void AHA_Character::Jump()
 {
@@ -83,6 +91,8 @@ void AHA_Character::MoveRight(float value)
 
 void AHA_Character::Evade()
 {
+// 	float tempGroundFriction;
+// 	tempGroundFriction = GroundFriction;
 	LaunchCharacter(MovementDirection * 1000 * ImpulseStrenght, false, false);
 }
 
@@ -93,3 +103,14 @@ void AHA_Character::SetPlayerRotation()
 		GetMesh()->SetWorldRotation(PlayerRotation);
 	}
 }
+
+void AHA_Character::ExecutingAction()
+{
+	bIsDoingAction = true;
+}
+
+void AHA_Character::StopAction()
+{
+	bIsDoingAction = false;
+}
+

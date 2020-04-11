@@ -45,6 +45,10 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
 	FRotator PlayerRotation;
 
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
+	bool bIsDoingAction;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -59,6 +63,9 @@ protected:
 
 	void SetPlayerRotation();
 
+	void ExecutingAction();
+	void StopAction();
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -67,5 +74,5 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	virtual void AddControllerPitchInput(float value) override;
-
+	
 };
