@@ -4,6 +4,7 @@
 #include "HA_Character.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 AHA_Character::AHA_Character()
@@ -23,6 +24,7 @@ AHA_Character::AHA_Character()
 void AHA_Character::BeginPlay()
 {
 	Super::BeginPlay();
+	defaultGroundFriction = GetCharacterMovement()->GroundFriction;
 }
 
 // Called every frame
@@ -88,18 +90,23 @@ void AHA_Character::MoveRight(float value)
 
 void AHA_Character::Evade()
 {
-// 	float tempGroundFriction;
-// 	tempGroundFriction = GroundFriction;
- 	if ((GetActorLocation().Z >= 110) && (GetActorLocation().Z <= 111))
- 	{
-		LaunchCharacter(MovementDirection * 1000 * ImpulseStrenght, false, false);
+	CalculateMovementDirection();
+	GetCharacterMovement()->GroundFriction = 0;
+	if ((GetCharacterMovement()->GroundFriction == 0) && (!GetCharacterMovement()->IsFalling())) {
+		LaunchStrenght = MovementDirection * ImpulseStrenght * 1000;
+		LaunchCharacter(LaunchStrenght, false, false);
 	}
-	
+	GetWorld()->GetTimerManager().SetTimer(EvadeFrictionTimer, this, &AHA_Character::RestoreFriction, 1.75f, false);
+}
+
+void AHA_Character::CalculateMovementDirection()
+{
+	MovementDirection = (ForwardMovementVector + RightMovementVector) / 2;
 }
 
 void AHA_Character::SetPlayerRotation()
 {
-	MovementDirection = (ForwardMovementVector + RightMovementVector) / 2;
+	CalculateMovementDirection();
  	if (!MovementDirection.IsZero()) {
  		PlayerRotation = MovementDirection.Rotation() + FRotator(0, -90, 0);
  		GetMesh()->SetWorldRotation(PlayerRotation);
@@ -114,5 +121,10 @@ void AHA_Character::ExecutingAction()
 void AHA_Character::StopAction()
 {
 	bIsDoingAction = false;
+}
+
+void AHA_Character::RestoreFriction()
+{
+	GetCharacterMovement()->GroundFriction = defaultGroundFriction;
 }
 

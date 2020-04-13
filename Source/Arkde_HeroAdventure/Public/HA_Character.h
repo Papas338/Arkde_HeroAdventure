@@ -18,39 +18,47 @@ public:
 	// Sets default values for this character's properties
 	AHA_Character();
 
-//Components
+	//Components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	UCameraComponent* TPSCameraComponent;
+		UCameraComponent* TPSCameraComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	USpringArmComponent* SpringArmComponent;
+		USpringArmComponent* SpringArmComponent;
 
-//Variables
+	//Variables
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Aiming")
-	bool bIsLookInverted;
+		bool bIsLookInverted;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement")
-	float ImpulseStrenght;
+		float ImpulseStrenght;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
-	FVector MovementDirection;
+		FVector MovementDirection;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
-	FVector ForwardMovementVector;
+		FVector ForwardMovementVector;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
-	FVector RightMovementVector;
+		FVector RightMovementVector;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
-	FRotator PlayerRotation;
+		FRotator PlayerRotation;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Physics")
+		float defaultGroundFriction;
+
+	UPROPERTY()
+		FTimerHandle EvadeFrictionTimer;
+
+	FVector LaunchStrenght;
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
-	bool bIsDoingAction;
+		bool bIsDoingAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
-	float tempZ;
+		float tempZ;
 
 protected:
 	// Called when the game starts or when spawned
@@ -64,12 +72,16 @@ protected:
 
 	void Evade();
 
+	void CalculateMovementDirection();
+
 	void SetPlayerRotation();
 
 	void ExecutingAction();
 	void StopAction();
 
-public:	
+	void RestoreFriction();
+
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -77,5 +89,6 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	virtual void AddControllerPitchInput(float value) override;
+
 
 };
