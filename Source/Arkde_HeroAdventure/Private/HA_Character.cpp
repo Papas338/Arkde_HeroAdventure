@@ -23,14 +23,12 @@ AHA_Character::AHA_Character()
 void AHA_Character::BeginPlay()
 {
 	Super::BeginPlay();
-
 }
 
 // Called every frame
 void AHA_Character::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
@@ -92,7 +90,11 @@ void AHA_Character::Evade()
 {
 // 	float tempGroundFriction;
 // 	tempGroundFriction = GroundFriction;
-	LaunchCharacter(MovementDirection * 1000 * ImpulseStrenght, false, false);
+ 	if ((GetActorLocation().Z >= 110) && (GetActorLocation().Z <= 111))
+ 	{
+		LaunchCharacter(MovementDirection * 1000 * ImpulseStrenght, false, false);
+	}
+	
 }
 
 void AHA_Character::SetPlayerRotation()
