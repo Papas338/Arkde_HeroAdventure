@@ -25,6 +25,7 @@ void AHA_Character::BeginPlay()
 {
 	Super::BeginPlay();
 	defaultGroundFriction = GetCharacterMovement()->GroundFriction;
+	bIsEvadeAvailable = true;
 }
 
 // Called every frame
@@ -90,13 +91,23 @@ void AHA_Character::MoveRight(float value)
 
 void AHA_Character::Evade()
 {
-	CalculateMovementDirection();
-	GetCharacterMovement()->GroundFriction = 0;
-	if ((GetCharacterMovement()->GroundFriction == 0) && (!GetCharacterMovement()->IsFalling())) {
-		LaunchStrenght = MovementDirection * ImpulseStrenght * 1000;
-		LaunchCharacter(LaunchStrenght, false, false);
+	if (bIsEvadeAvailable)
+	{
+		CalculateMovementDirection();
+		GetCharacterMovement()->GroundFriction = 0;
+		if ((GetCharacterMovement()->GroundFriction == 0) && (!GetCharacterMovement()->IsFalling())) {
+			LaunchStrenght = MovementDirection * ImpulseStrenght * 1000;
+			LaunchCharacter(LaunchStrenght, false, false);
+			bIsEvadeAvailable = false;
+		}
+		GetWorld()->GetTimerManager().SetTimer(EvadeFrictionTimer, this, &AHA_Character::RestoreFriction, 1.5f, false);
+		GetWorld()->GetTimerManager().SetTimer(EvadeCooldown, this, &AHA_Character::CooldownFinishedEvade, 1, false);
 	}
-	GetWorld()->GetTimerManager().SetTimer(EvadeFrictionTimer, this, &AHA_Character::RestoreFriction, 1.75f, false);
+}
+
+void AHA_Character::CooldownFinishedEvade()
+{
+	bIsEvadeAvailable = true;
 }
 
 void AHA_Character::CalculateMovementDirection()

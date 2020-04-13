@@ -48,10 +48,15 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Physics")
 		float defaultGroundFriction;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly, Category = "Timers")
 		FTimerHandle EvadeFrictionTimer;
 
+	UPROPERTY(BlueprintReadOnly, Category = "Timers")
+		FTimerHandle EvadeCooldown;
+
 	FVector LaunchStrenght;
+	bool bIsEvadeAvailable;
+
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
@@ -71,6 +76,7 @@ protected:
 	void MoveRight(float value);
 
 	void Evade();
+	void CooldownFinishedEvade();
 
 	void CalculateMovementDirection();
 
