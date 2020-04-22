@@ -5,6 +5,7 @@
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "HA_Character.h"
+#include "Math/UnrealMathUtility.h"
 
 // Sets default values
 AHA_LaunchPad::AHA_LaunchPad()
@@ -20,6 +21,10 @@ AHA_LaunchPad::AHA_LaunchPad()
 
 	LaunchPadComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LaunchPadComponent"));
 	LaunchPadComponent->SetupAttachment(RootComponent);
+
+	ArrowComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ArowComponent"));
+	ArrowComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	ArrowComponent->SetupAttachment(RootComponent);
 
 }
 
@@ -71,8 +76,18 @@ void AHA_LaunchPad::JumpPadAction()
 	}
 	if (Player->bIsDoingAction)
 	{
-		Player->LaunchCharacter(FVector(1000, 0, 1000), true, true);
+		Player->LaunchCharacter(GetLaunchDirection(), true, true);
 	}
+}
+
+FVector AHA_LaunchPad::GetLaunchDirection()
+{
+	x = FMath::Sin(FMath::DegreesToRadians(GetActorRotation().Yaw + 90));
+	y = FMath::Cos(FMath::DegreesToRadians(GetActorRotation().Yaw + 90));
+	LaunchDirection.X = x * 1000;
+	LaunchDirection.Y = -y * 1000;
+	LaunchDirection.Z = 1000;
+	return LaunchDirection;
 }
 
 

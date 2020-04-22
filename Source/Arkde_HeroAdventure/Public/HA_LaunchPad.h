@@ -14,41 +14,57 @@ UCLASS()
 class ARKDE_HEROADVENTURE_API AHA_LaunchPad : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AHA_LaunchPad();
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	UBoxComponent* HitboxComponent;
+		UBoxComponent* HitboxComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	UStaticMeshComponent* LaunchPadComponent;
+		UStaticMeshComponent* LaunchPadComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+		UStaticMeshComponent* ArrowComponent;
 
 	UPROPERTY()
-	AHA_Character* Player;
+		AHA_Character* Player;
+
+protected:
+
+	UPROPERTY()
+		FVector LaunchDirection;
+
+	UPROPERTY()
+		float x;
+
+	UPROPERTY()
+		float y;
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Map Elements")
-	bool bIsOverlapped;
+		bool bIsOverlapped;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Collision")
-	void BP_Collision();
+		void BP_Collision();
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Collision")
-	void BP_CollisionEnd();
+		void BP_CollisionEnd();
 
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
-	void JumpPadAction();
+		void JumpPadAction();
 
-public:	
+	UFUNCTION(BlueprintCallable, Category = "Gameplay")
+		FVector GetLaunchDirection();
+
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	
+
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
 	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
