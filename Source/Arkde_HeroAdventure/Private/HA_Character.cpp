@@ -2,6 +2,7 @@
 
 
 #include "HA_Character.h"
+#include "Components/SceneComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -26,6 +27,7 @@ void AHA_Character::BeginPlay()
 	Super::BeginPlay();
 	defaultGroundFriction = GetCharacterMovement()->GroundFriction;
 	bIsEvadeAvailable = true;
+	walkSpeed = 1.0f;
 }
 
 // Called every frame
@@ -50,6 +52,9 @@ void AHA_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAxis("LookVertical", this, &AHA_Character::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookHorizontal", this, &ACharacter::AddControllerYawInput);
 
+	PlayerInputComponent->BindAction("Aiming", IE_Pressed, this, &AHA_Character::Aiming);
+	PlayerInputComponent->BindAction("Aiming", IE_Released, this, &AHA_Character::StopAiming);
+
 	//Jump
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AHA_Character::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &AHA_Character::StopJumping);
@@ -63,8 +68,6 @@ void AHA_Character::AddControllerPitchInput(float value) {
 	Super::AddControllerPitchInput(bIsLookInverted ? value : -value);
 }
 
-
-
 void AHA_Character::Jump()
 {
 	Super::Jump();
@@ -77,14 +80,14 @@ void AHA_Character::StopJumping()
 
 void AHA_Character::MoveForward(float value)
 {
-	ForwardMovementVector = GetActorForwardVector() * value;
+	ForwardMovementVector = GetActorForwardVector() * value * walkSpeed;
 	AddMovementInput(ForwardMovementVector);
 	SetPlayerRotation();
 }
 
 void AHA_Character::MoveRight(float value)
 {
-	RightMovementVector = GetActorRightVector() * value;
+	RightMovementVector = GetActorRightVector() * value * walkSpeed;
 	AddMovementInput(RightMovementVector);
 	SetPlayerRotation();
 }
@@ -117,10 +120,14 @@ void AHA_Character::CalculateMovementDirection()
 
 void AHA_Character::SetPlayerRotation()
 {
+	if (bIsAiming)
+	{
+		return;
+	}
 	CalculateMovementDirection();
  	if (!MovementDirection.IsZero()) {
  		PlayerRotation = MovementDirection.Rotation() + FRotator(0, -90, 0);
- 		GetMesh()->SetWorldRotation(PlayerRotation);
+ 		GetMesh()->SetRelativeRotation(PlayerRotation);
  	}
 }
 
@@ -137,5 +144,38 @@ void AHA_Character::StopAction()
 void AHA_Character::RestoreFriction()
 {
 	GetCharacterMovement()->GroundFriction = defaultGroundFriction;
+}
+
+void AHA_Character::Aiming()
+{
+	//Rotation
+	tempRotation = GetMesh()->GetRelativeRotation();
+	bIsAiming = true;
+	GetMesh()->SetUsingAbsoluteRotation(false);
+	GetMesh()->SetRelativeRotation(SpringArmComponent->GetRelativeRotation() + FRotator(0, -90, 0));
+
+	//Camera
+	SpringArmComponent->TargetArmLength = 150;
+	SpringArmComponent->SocketOffset.Y = 40;
+	SpringArmComponent->SocketOffset.Z = 20;
+
+	//Movement
+	walkSpeed = 0.5f;
+}
+
+void AHA_Character::StopAiming()
+{
+	//Rotation
+	bIsAiming = false;
+	GetMesh()->SetUsingAbsoluteRotation(true);
+	GetMesh()->SetRelativeRotation(tempRotation);
+
+	//Camera
+	SpringArmComponent->TargetArmLength = 300;
+	SpringArmComponent->SocketOffset.Y = 0;
+	SpringArmComponent->SocketOffset.Z = 0;
+
+	//Movement
+	walkSpeed = 1.0f;
 }
 

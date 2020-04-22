@@ -33,6 +33,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement")
 		float ImpulseStrenght;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement")
+		float walkSpeed;
+
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
 		FVector MovementDirection;
 
@@ -54,8 +57,11 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Timers")
 		FTimerHandle EvadeCooldown;
 
-	FVector LaunchStrenght;
-	bool bIsEvadeAvailable;
+	UPROPERTY()
+		FVector LaunchStrenght;
+
+	UPROPERTY()
+		bool bIsEvadeAvailable;
 
 
 public:
@@ -64,6 +70,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
 		float tempZ;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
+		bool bIsAiming;
+
+	UPROPERTY()
+		FRotator tempRotation;
 
 protected:
 	// Called when the game starts or when spawned
@@ -86,6 +98,9 @@ protected:
 	void StopAction();
 
 	void RestoreFriction();
+
+	void Aiming();
+	void StopAiming();
 
 public:
 	// Called every frame
