@@ -94,7 +94,7 @@ void AHA_Character::MoveRight(float value)
 
 void AHA_Character::Evade()
 {
-	if (bIsEvadeAvailable)
+	if ((bIsEvadeAvailable) && (!bIsAiming))
 	{
 		CalculateMovementDirection();
 		GetCharacterMovement()->GroundFriction = 0;
