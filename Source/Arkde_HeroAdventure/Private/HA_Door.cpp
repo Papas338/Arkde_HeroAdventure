@@ -4,6 +4,7 @@
 #include "HA_Door.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
+#include "HA_Character.h"
 
 // Sets default values
 AHA_Door::AHA_Door()
@@ -21,6 +22,9 @@ AHA_Door::AHA_Door()
 	OpenZoneComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	OpenZoneComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 	OpenZoneComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+
+	angle = -90.0f;
+	DoorTag = "KeyA";
 }
 
 // Called when the game starts or when spawned
@@ -29,6 +33,26 @@ void AHA_Door::BeginPlay()
 	Super::BeginPlay();
 	
 }
+
+
+void AHA_Door::CheckKeyFromPlayer(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
+{
+	if (bIsOpen)
+	{
+		return;
+	}
+	if (IsValid(OtherActor)) {
+		AHA_Character* OverlappedCharacter = Cast<AHA_Character>(OtherActor);
+		if (IsValid(OverlappedCharacter))
+		{
+			if (OverlappedCharacter->HasKey(DoorTag))
+			{
+				OpenDoor();
+			}
+		}
+	}
+}
+
 
 void AHA_Door::NotifyActorBeginOverlap(AActor * OtherActor)
 {
@@ -44,7 +68,7 @@ void AHA_Door::NotifyActorBeginOverlap(AActor * OtherActor)
 
 void AHA_Door::OpenDoor()
 {
-	DoorComponent->AddRelativeRotation(FRotator(0, -90, 0));
+	DoorComponent->AddRelativeRotation(FRotator(0, angle, 0));
 }
 
 // Called every frame

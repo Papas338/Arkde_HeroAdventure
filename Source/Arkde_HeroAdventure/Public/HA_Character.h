@@ -63,6 +63,8 @@ protected:
 	UPROPERTY()
 		bool bIsEvadeAvailable;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Key")
+		TArray<FName> KeyTags;
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
@@ -111,5 +113,7 @@ public:
 
 	virtual void AddControllerPitchInput(float value) override;
 
+	void AddKey(FName NewKey);
 
+	bool HasKey(FName Keytag);
 };

@@ -179,3 +179,14 @@ void AHA_Character::StopAiming()
 	walkSpeed = 1.0f;
 }
 
+void AHA_Character::AddKey(FName NewKey)
+{
+	KeyTags.Add(NewKey);
+}
+
+bool AHA_Character::HasKey(FName Keytag)
+{
+	return KeyTags.Contains(Keytag);
+}
+
+
