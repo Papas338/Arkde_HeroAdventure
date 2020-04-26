@@ -7,6 +7,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
+#include "Weapons/HA_Weapon.h"
+
 // Sets default values
 AHA_Character::AHA_Character()
 {
@@ -28,6 +30,8 @@ void AHA_Character::BeginPlay()
 	defaultGroundFriction = GetCharacterMovement()->GroundFriction;
 	bIsEvadeAvailable = true;
 	walkSpeed = 1.0f;
+
+	SetInitialWeapon();
 }
 
 // Called every frame
@@ -62,6 +66,9 @@ void AHA_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	//Evade
 	PlayerInputComponent->BindAction("Evade", IE_Pressed, this, &AHA_Character::Evade);
 		
+	//Gunplay
+	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &AHA_Character::StartAttack);
+	PlayerInputComponent->BindAction("Attack", IE_Released, this, &AHA_Character::StopAttack);
 }
 
 void AHA_Character::AddControllerPitchInput(float value) {
@@ -156,7 +163,7 @@ void AHA_Character::Aiming()
 
 	//Camera
 	SpringArmComponent->TargetArmLength = 150;
-	SpringArmComponent->SocketOffset.Y = 40;
+	SpringArmComponent->SocketOffset.Y = 70;
 	SpringArmComponent->SocketOffset.Z = 20;
 
 	//Movement
@@ -177,6 +184,37 @@ void AHA_Character::StopAiming()
 
 	//Movement
 	walkSpeed = 1.0f;
+}
+
+void AHA_Character::StartAttack()
+{
+	if (IsValid(CurrentWeapon))
+	{
+		if (bIsAiming)
+		{
+			CurrentWeapon->StartWeaponAction();
+		}
+	}
+}
+
+void AHA_Character::StopAttack()
+{
+	if (IsValid(CurrentWeapon))
+	{
+		if (bIsAiming)
+		{
+			CurrentWeapon->StopWeaponAction();
+		}
+	}
+}
+
+void AHA_Character::SetInitialWeapon()
+{
+	if (IsValid(InitialWeaponClass))
+	{
+		CurrentWeapon = GetWorld()->SpawnActor<AHA_Weapon>(InitialWeaponClass, GetActorLocation(), GetActorRotation());
+		CurrentWeapon->CurrentWeaponOwner(this);
+	}
 }
 
 void AHA_Character::AddKey(FName NewKey)

@@ -8,6 +8,7 @@
 
 class UCameraComponent;
 class USpringArmComponent;
+class AHA_Weapon;
 
 UCLASS()
 class ARKDE_HEROADVENTURE_API AHA_Character : public ACharacter
@@ -66,6 +67,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Key")
 		TArray<FName> KeyTags;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+		TSubclassOf<AHA_Weapon> InitialWeaponClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+		AHA_Weapon* CurrentWeapon;
+
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
 		bool bIsDoingAction;
@@ -103,6 +110,11 @@ protected:
 
 	void Aiming();
 	void StopAiming();
+
+	void StartAttack();
+	void StopAttack();
+
+	void SetInitialWeapon();
 
 public:
 	// Called every frame
