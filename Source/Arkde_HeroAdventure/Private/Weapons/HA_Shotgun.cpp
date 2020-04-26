@@ -21,6 +21,10 @@ void AHA_Shotgun::StartWeaponAction()
 	Super::StartWeaponAction();
 
 	GenerateShot(FVector(0, 0, 0));
+	GenerateShot(FVector(0, 40, 0));
+	GenerateShot(FVector(0, -40, 0));
+	GenerateShot(FVector(0, 0, 40));
+	GenerateShot(FVector(0, 0, -40));
 }
 
 void AHA_Shotgun::StopWeaponAction()
@@ -36,7 +40,7 @@ void AHA_Shotgun::GenerateShot(FVector Offset)
 	CurrentOwner->GetActorEyesViewPoint(EyesLocation, EyesRotation);
 
 	FVector ShotDirection = EyesRotation.Vector();
-	FVector TraceEnd = EyesLocation + (ShotDirection * TraceLenght);
+	FVector TraceEnd = EyesLocation + (ShotDirection * TraceLenght) + Offset;
 
 	FHitResult HitResult;
 
