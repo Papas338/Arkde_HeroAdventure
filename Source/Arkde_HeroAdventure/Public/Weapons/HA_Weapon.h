@@ -6,13 +6,20 @@
 #include "GameFramework/Actor.h"
 #include "HA_Weapon.generated.h"
 
+class UDamageType;
+
 UCLASS()
 class ARKDE_HEROADVENTURE_API AHA_Weapon : public AActor
 {
 	GENERATED_BODY()
 	
 protected:
-	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Damage")
+		float DamageDealt;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
+		TSubclassOf<UDamageType> DamageType;
+
 		ACharacter* CurrentOwner;
 
 public:	

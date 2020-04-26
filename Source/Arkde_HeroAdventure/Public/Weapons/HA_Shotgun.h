@@ -17,20 +17,26 @@ class ARKDE_HEROADVENTURE_API AHA_Shotgun : public AHA_Weapon
 	GENERATED_BODY()
 	
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Linetrace")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Linetrace")
 		float TraceLenght;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Linetrace")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Linetrace")
 		bool bDrawLine;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Effects")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effects")
 		FName MuzzleSocketName;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Effects")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effects")
+		FName TraceEffectName;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effects")
 		UParticleSystem* ImpactEffect;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Effects")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effects")
 		UParticleSystem* ShootEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effects")
+		UParticleSystem* TraceEffect;
 
 public:
 	AHA_Shotgun();
@@ -40,5 +46,5 @@ public:
 	virtual void StartWeaponAction() override;
 	virtual void StopWeaponAction() override;
 
-	
+	void GenerateShot(FVector Offset);
 };

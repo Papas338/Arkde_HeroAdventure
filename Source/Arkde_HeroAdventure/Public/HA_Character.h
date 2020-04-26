@@ -128,4 +128,6 @@ public:
 	void AddKey(FName NewKey);
 
 	bool HasKey(FName Keytag);
+
+	virtual FVector GetPawnViewLocation() const override;
 };

@@ -227,4 +227,13 @@ bool AHA_Character::HasKey(FName Keytag)
 	return KeyTags.Contains(Keytag);
 }
 
+FVector AHA_Character::GetPawnViewLocation() const
+{
+	if (IsValid(TPSCameraComponent))
+	{
+		return TPSCameraComponent->GetComponentLocation();
+	}
+	return Super::GetPawnViewLocation();
+}
+
 
