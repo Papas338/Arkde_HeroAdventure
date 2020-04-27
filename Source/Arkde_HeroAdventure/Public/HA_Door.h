@@ -17,6 +17,7 @@ class ARKDE_HEROADVENTURE_API AHA_Door : public AActor
 		
 protected:
 
+	//Components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 		USceneComponent* CustomRootComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
@@ -27,6 +28,7 @@ protected:
 		UBoxComponent* OpenZoneComponent;
 
 protected:
+	//Variables
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "My door")
 		bool bIsOpen;
 
@@ -44,11 +46,15 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	//Detect player
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
+	//Checks if the player can open the door
 	UFUNCTION()
 		void CheckKeyFromPlayer(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
 
+	//Opens the door
 	void OpenDoor();
 
 public:

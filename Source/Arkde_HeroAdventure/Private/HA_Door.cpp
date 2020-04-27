@@ -11,6 +11,8 @@ AHA_Door::AHA_Door()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	//ComponentInitialization
 	CustomRootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("CustomRootComponent"));
 	RootComponent = CustomRootComponent;
 	DoorComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorComponent"));
@@ -23,6 +25,7 @@ AHA_Door::AHA_Door()
 	OpenZoneComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 	OpenZoneComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 
+	//Variable initialization
 	angle = -90.0f;
 	DoorTag = "KeyA";
 }
@@ -31,10 +34,16 @@ AHA_Door::AHA_Door()
 void AHA_Door::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
+// Called every frame
+void AHA_Door::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
 
+}
+
+//Checks if the player has the key needed to open the door
 void AHA_Door::CheckKeyFromPlayer(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {
 	if (bIsOpen)
@@ -53,7 +62,7 @@ void AHA_Door::CheckKeyFromPlayer(UPrimitiveComponent * OverlappedComponent, AAc
 	}
 }
 
-
+//Checks if the player it's close enough to open the door
 void AHA_Door::NotifyActorBeginOverlap(AActor * OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
@@ -66,15 +75,9 @@ void AHA_Door::NotifyActorBeginOverlap(AActor * OtherActor)
 	
 }
 
+//Opens the door
 void AHA_Door::OpenDoor()
 {
 	DoorComponent->AddRelativeRotation(FRotator(0, angle, 0));
-}
-
-// Called every frame
-void AHA_Door::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
 }
 
