@@ -11,6 +11,7 @@ AHA_Goal::AHA_Goal()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	//Components initialization
 	GoalHitBoxComponent = CreateDefaultSubobject<USphereComponent>(TEXT("HitBoxComponent"));
 	GoalHitBoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	GoalHitBoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
@@ -28,12 +29,6 @@ void AHA_Goal::BeginPlay()
 	
 }
 
-void AHA_Goal::NotifyActorBeginOverlap(AActor * OtherActor)
-{
-	Super::NotifyActorBeginOverlap(OtherActor);
-	GoalReached();
-}
-
 // Called every frame
 void AHA_Goal::Tick(float DeltaTime)
 {
@@ -41,6 +36,14 @@ void AHA_Goal::Tick(float DeltaTime)
 
 }
 
+//Detects if the player has reached the goal
+void AHA_Goal::NotifyActorBeginOverlap(AActor * OtherActor)
+{
+	Super::NotifyActorBeginOverlap(OtherActor);
+	GoalReached();
+}
+
+//Runs different functions when the Goal is reached
 void AHA_Goal::GoalReached()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, TEXT("Goal Reached!"));
