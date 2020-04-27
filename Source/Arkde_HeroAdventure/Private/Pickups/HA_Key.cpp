@@ -7,13 +7,16 @@
 
 AHA_Key::AHA_Key()
 {
+	//Component initialization
 	KeyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("KeyMeshComponent"));
 	KeyMesh->SetupAttachment(RootComponent);
 	KeyMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
+	//Variable initialization
 	Keytag = "KeyA";
 }
 
+//Executes functions related with the item the player picked up
 void AHA_Key::PickUpItem(AHA_Character* PickupActor)
 {
 	Super::PickUpItem(PickupActor);

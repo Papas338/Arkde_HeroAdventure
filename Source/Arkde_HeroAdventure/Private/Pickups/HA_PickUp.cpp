@@ -11,6 +11,7 @@ AHA_PickUp::AHA_PickUp()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	//Component initialization
 	HitBoxComponent = CreateDefaultSubobject<USphereComponent>(TEXT("HitboxComponent"));
 	HitBoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	HitBoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
@@ -24,17 +25,15 @@ AHA_PickUp::AHA_PickUp()
 void AHA_PickUp::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
 void AHA_PickUp::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
-
+//Detects if the player had contact with the possible items
 void AHA_PickUp::NotifyActorBeginOverlap(AActor * OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
@@ -47,6 +46,7 @@ void AHA_PickUp::NotifyActorBeginOverlap(AActor * OtherActor)
 	}
 }
 
+//Executes functions related with the pick up process
 void AHA_PickUp::PickUpItem(AHA_Character* PickupActor)
 {
 	BP_PickUp(PickupActor);

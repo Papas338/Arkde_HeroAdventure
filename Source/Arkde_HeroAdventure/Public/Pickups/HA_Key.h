@@ -14,10 +14,12 @@ class ARKDE_HEROADVENTURE_API AHA_Key : public AHA_PickUp
 {
 	GENERATED_BODY()
 protected:
+	//Components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 		UStaticMeshComponent* KeyMesh;
 
 protected:
+	//Variables
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Key")
 		FName Keytag;
 
@@ -26,12 +28,12 @@ public:
 	AHA_Key();
 
 public:
-
 	//Returns the tag for the specified key on the scene
 	UFUNCTION(BlueprintCallable, Category = "Getter")
 		FName GetKeyTag() const { return Keytag; };
 
 protected:
 
+	//Runs functions related to the item
 	virtual void PickUpItem(AHA_Character* PickupActor) override;
 };
