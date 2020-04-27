@@ -20,17 +20,18 @@ public:
 	AHA_LaunchPad();
 
 protected:
+	//Components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 		UBoxComponent* HitboxComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 		UStaticMeshComponent* LaunchPadComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 		UStaticMeshComponent* ArrowComponent;
-
+	  
+protected:
+	//Variables
 	UPROPERTY()
 		AHA_Character* Player;
-
-protected:
 
 	UPROPERTY()
 		FVector LaunchDirection;
@@ -48,16 +49,19 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
+	
+	//Funtions that can be used on Blueprints
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Collision")
 		void BP_Collision();
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Collision")
 		void BP_CollisionEnd();
 
+	//This function executes the impulse
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
 		void JumpPadAction();
 
+	//This functions says the direction that the impulse will be executed
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
 		FVector GetLaunchDirection();
 
@@ -65,9 +69,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	//Player detection
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
-
 	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
-
-
 };
