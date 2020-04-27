@@ -14,6 +14,7 @@ class ARKDE_HEROADVENTURE_API AHA_Weapon : public AActor
 	GENERATED_BODY()
 	
 protected:
+	//Variables
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Damage")
 		float DamageDealt;
 
@@ -34,8 +35,10 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	//Attack functions
 	virtual void StartWeaponAction();
 	virtual void StopWeaponAction();
 
+	//Finds the owner for the weapon
 	void CurrentWeaponOwner(ACharacter* WeaponOwner);
 };

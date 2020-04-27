@@ -16,6 +16,7 @@ AHA_Shotgun::AHA_Shotgun()
 	DamageDealt = 1.0f;
 }
 
+//Executes functions related with the weapon shooting
 void AHA_Shotgun::StartWeaponAction()
 {
 	Super::StartWeaponAction();
@@ -27,11 +28,13 @@ void AHA_Shotgun::StartWeaponAction()
 	GenerateShot(FVector(0, 0, -40));
 }
 
+//Executes functions when the player stops shooting
 void AHA_Shotgun::StopWeaponAction()
 {
 	Super::StopWeaponAction();
 }
 
+//Generates everything related with the shot, such as the damage dealer and particles that create a visual representation of it
 void AHA_Shotgun::GenerateShot(FVector Offset)
 {
 

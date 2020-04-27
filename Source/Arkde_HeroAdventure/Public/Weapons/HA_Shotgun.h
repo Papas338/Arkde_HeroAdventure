@@ -17,6 +17,7 @@ class ARKDE_HEROADVENTURE_API AHA_Shotgun : public AHA_Weapon
 	GENERATED_BODY()
 	
 protected:
+	//variables
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Linetrace")
 		float TraceLenght;
 
@@ -43,8 +44,10 @@ public:
 
 public:
 
+	//Shotgun shoot
 	virtual void StartWeaponAction() override;
 	virtual void StopWeaponAction() override;
 
+	//Shot display
 	void GenerateShot(FVector Offset);
 };
