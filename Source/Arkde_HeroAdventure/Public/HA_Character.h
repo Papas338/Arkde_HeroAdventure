@@ -20,6 +20,8 @@ public:
 	AHA_Character();
 
 	//Components
+
+	//Camera
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 		UCameraComponent* TPSCameraComponent;
 
@@ -28,11 +30,10 @@ public:
 
 	//Variables
 protected:
+
+	//Player Basic Movement
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Aiming")
 		bool bIsLookInverted;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement")
-		float ImpulseStrenght;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement")
 		float walkSpeed;
@@ -49,24 +50,31 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
 		FRotator PlayerRotation;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Physics")
+	//Abilities
+	//Evade
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement|Evade")
+		float ImpulseStrenght;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Physics|Evade")
 		float defaultGroundFriction;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Timers")
+	UPROPERTY(BlueprintReadOnly, Category = "Timers|Evade")
 		FTimerHandle EvadeFrictionTimer;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Timers")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Timers|Evade")
 		FTimerHandle EvadeCooldown;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly, Category = "Movement|Evade")
 		FVector LaunchStrenght;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly, Category = "Movement|Evade")
 		bool bIsEvadeAvailable;
 
+	//Pickups
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Key")
 		TArray<FName> KeyTags;
 
+	//Weapons
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
 		TSubclassOf<AHA_Weapon> InitialWeaponClass;
 
@@ -74,43 +82,47 @@ protected:
 		AHA_Weapon* CurrentWeapon;
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
-		bool bIsDoingAction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
-		float tempZ;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
-		bool bIsAiming;
-
-	UPROPERTY()
+	//Player Basic Movement
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
 		FRotator tempRotation;
 
+	//Player Basic Gameplay
+	UPROPERTY(BlueprintReadOnly, Category = "Gameplay")
+		bool bIsDoingAction;
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Gameplay")
+		bool bIsAiming;
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	//Jump
 	virtual void Jump() override;
 	virtual void StopJumping() override;
 
+	//Movement
 	void MoveForward(float value);
 	void MoveRight(float value);
 
-	void Evade();
-	void CooldownFinishedEvade();
-
 	void CalculateMovementDirection();
-
 	void SetPlayerRotation();
 
+	//Evade
+	void Evade();
+	void CooldownFinishedEvade();
+	void RestoreFriction();
+	
+	//Action
 	void ExecutingAction();
 	void StopAction();
-
-	void RestoreFriction();
-
+	
+	//Aiming
 	void Aiming();
 	void StopAiming();
 
+	//Attack
 	void StartAttack();
 	void StopAttack();
 
@@ -120,14 +132,16 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
+	//Input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	//Movement
 	virtual void AddControllerPitchInput(float value) override;
 
+	//Pickups
 	void AddKey(FName NewKey);
-
 	bool HasKey(FName Keytag);
 
+	//Gameplay
 	virtual FVector GetPawnViewLocation() const override;
 };
