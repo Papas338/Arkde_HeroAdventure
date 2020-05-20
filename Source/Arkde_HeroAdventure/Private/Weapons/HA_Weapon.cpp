@@ -36,7 +36,7 @@ void AHA_Weapon::StopWeaponAction()
 }
 
 //Determines the owner for the weapon that is using the code
-void AHA_Weapon::CurrentWeaponOwner(ACharacter* WeaponOwner)
+void AHA_Weapon::SetWeaponOwner(ACharacter* WeaponOwner)
 {
 	SetOwner(WeaponOwner);
 	CurrentOwner = WeaponOwner;

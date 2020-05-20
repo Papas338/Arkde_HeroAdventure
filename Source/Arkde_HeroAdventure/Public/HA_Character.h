@@ -9,6 +9,9 @@
 class UCameraComponent;
 class USpringArmComponent;
 class AHA_Weapon;
+class UAnimMontage;
+class UAnimInstance;
+class UCapsuleComponent;
 
 UCLASS()
 class ARKDE_HEROADVENTURE_API AHA_Character : public ACharacter
@@ -27,6 +30,12 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 		USpringArmComponent* SpringArmComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+		UCapsuleComponent* RightHandSpearComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+		UCapsuleComponent* LeftHandSpearComponent;
 
 	//Variables
 protected:
@@ -75,11 +84,20 @@ protected:
 		TArray<FName> KeyTags;
 
 	//Weapons
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
-		TSubclassOf<AHA_Weapon> InitialWeaponClass;
+	UPROPERTY(BlueprintReadOnly, Category = "Weapon")
+		FName RightHandSocket;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Weapon")
+		FName LeftHandSocket;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
 		AHA_Weapon* CurrentWeapon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+		AHA_Weapon* AlternativeWeapon;
+
+	UPROPERTY()
+		AHA_Weapon* Temp;
 
 public:
 
@@ -93,10 +111,28 @@ public:
 	
 	UPROPERTY(BlueprintReadOnly, Category = "Gameplay")
 		bool bIsAiming;
+
+	//Animations
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation")
+		TArray<UAnimMontage*> MeleeMontage;
+
+	UAnimInstance* MyAnimInstance;
+
+	//Weapons
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+		TSubclassOf<AHA_Weapon> MeleeWeaponClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+		TSubclassOf<AHA_Weapon> FireWeaponClass;
 	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	//Initialize
+	void InitializeVariables();
+	void InitializeReferences();
 
 	//Jump
 	virtual void Jump() override;
@@ -126,7 +162,9 @@ protected:
 	void StartAttack();
 	void StopAttack();
 
+	//Weapons
 	void SetInitialWeapon();
+	void SetSecondaryWeapon();
 
 public:
 	// Called every frame
@@ -144,4 +182,7 @@ public:
 
 	//Gameplay
 	virtual FVector GetPawnViewLocation() const override;
+
+	//Weapons
+	TSubclassOf<AHA_Weapon> GetSpear();
 };

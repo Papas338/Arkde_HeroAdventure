@@ -40,5 +40,5 @@ public:
 	virtual void StopWeaponAction();
 
 	//Finds the owner for the weapon
-	void CurrentWeaponOwner(ACharacter* WeaponOwner);
+	void SetWeaponOwner(ACharacter* WeaponOwner);
 };

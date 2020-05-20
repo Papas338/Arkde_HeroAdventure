@@ -2,6 +2,7 @@
 
 
 #include "Weapons/HA_Shotgun.h"
+#include "Arkde_HeroAdventure/Arkde_HeroAdventure.h"
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystem.h"
 #include "Particles/ParticleSystemComponent.h"
@@ -51,7 +52,7 @@ void AHA_Shotgun::GenerateShot(FVector Offset)
 	LineTraceQueryParams.AddIgnoredActor(this);
 	LineTraceQueryParams.AddIgnoredActor(GetOwner());
 	LineTraceQueryParams.bTraceComplex = true;
-	bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, EyesLocation, TraceEnd, ECC_Visibility, LineTraceQueryParams);
+	bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, EyesLocation, TraceEnd, COLLISION_WEAPON, LineTraceQueryParams);
 
 	if (bHit)
 	{

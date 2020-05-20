@@ -2,10 +2,12 @@
 
 
 #include "HA_Character.h"
+#include "Arkde_HeroAdventure/Arkde_HeroAdventure.h"
 #include "Components/SceneComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Components/CapsuleComponent.h"
 
 #include "Weapons/HA_Weapon.h"
 
@@ -14,6 +16,9 @@ AHA_Character::AHA_Character()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	RightHandSocket = "SCK_SpearRightHand";
+	LeftHandSocket = "SCK_SpearLeftHand";
+
 	//Components initialization
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring_Arm_Component"));
 	SpringArmComponent->bUsePawnControlRotation = true;
@@ -21,23 +26,52 @@ AHA_Character::AHA_Character()
 
 	TPSCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("TPS_Camera"));
 	TPSCameraComponent->SetupAttachment(SpringArmComponent);
+
+	RightHandSpearComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("RightHandSpearComponent"));
+	RightHandSpearComponent->SetupAttachment(GetMesh(), RightHandSocket);
+	RightHandSpearComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+	RightHandSpearComponent->SetCollisionResponseToChannel(COLLISION_ENEMY,ECR_Overlap);
+	RightHandSpearComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	
+	LeftHandSpearComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("LeftHandSpearComponent"));
+	LeftHandSpearComponent->SetupAttachment(GetMesh(), LeftHandSocket);
+	LeftHandSpearComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+	LeftHandSpearComponent->SetCollisionResponseToChannel(COLLISION_ENEMY,ECR_Overlap);
+	LeftHandSpearComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 // Called when the game starts or when spawned
 void AHA_Character::BeginPlay()
 {
 	Super::BeginPlay();
-	defaultGroundFriction = GetCharacterMovement()->GroundFriction;
-	bIsEvadeAvailable = true;
-	walkSpeed = 1.0f;
+	InitializeVariables();
+	InitializeReferences();
 
 	SetInitialWeapon();
+	SetSecondaryWeapon();
 }
 
 // Called every frame
 void AHA_Character::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+/*
+This section initialize values at the start of the game
+- InitializeVariables
+- InitializeReferences
+*/
+void AHA_Character::InitializeVariables()
+{
+	defaultGroundFriction = GetCharacterMovement()->GroundFriction;
+	bIsEvadeAvailable = true;
+	walkSpeed = 1.0f;
+}
+
+void AHA_Character::InitializeReferences()
+{
+	MyAnimInstance = GetMesh()->GetAnimInstance();
 }
 
 /*
@@ -213,6 +247,11 @@ void AHA_Character::RestoreFriction()
 //Attacking
 void AHA_Character::Aiming()
 {
+	//Sets the fire weapon as the main one
+	Temp = CurrentWeapon;
+	CurrentWeapon = AlternativeWeapon;
+	AlternativeWeapon = Temp;
+
 	//This function switches the character behavior to fit the attitude of holding a gun
 	//Rotation
 	tempRotation = GetMesh()->GetRelativeRotation();
@@ -231,6 +270,11 @@ void AHA_Character::Aiming()
 
 void AHA_Character::StopAiming()
 {
+	//Sets the melee weapon as the main one
+	Temp = CurrentWeapon;
+	CurrentWeapon = AlternativeWeapon;
+	AlternativeWeapon = Temp;
+
 	//This function resets the character to its default position
 	//Rotation
 	bIsAiming = false;
@@ -261,10 +305,7 @@ void AHA_Character::StartAttack()
 	//Executes the attack of the selected weapon
 	if (IsValid(CurrentWeapon))
 	{
-		if (bIsAiming)
-		{
-			CurrentWeapon->StartWeaponAction();
-		}
+		CurrentWeapon->StartWeaponAction();
 	}
 }
 
@@ -272,21 +313,32 @@ void AHA_Character::StopAttack()
 {
 	if (IsValid(CurrentWeapon))
 	{
-		if (bIsAiming)
-		{
-			CurrentWeapon->StopWeaponAction();
-		}
+		CurrentWeapon->StopWeaponAction();
 	}
 }
 
 void AHA_Character::SetInitialWeapon()
 {
 	//Sets the starter weapon that the player will use 
-	if (IsValid(InitialWeaponClass))
+	if (IsValid(MeleeWeaponClass))
 	{
-		CurrentWeapon = GetWorld()->SpawnActor<AHA_Weapon>(InitialWeaponClass, GetActorLocation(), GetActorRotation());
-		CurrentWeapon->CurrentWeaponOwner(this);
+		CurrentWeapon = GetWorld()->SpawnActor<AHA_Weapon>(MeleeWeaponClass, GetActorLocation(), GetActorRotation());
+		CurrentWeapon->SetWeaponOwner(this);
 	}
+}
+
+void AHA_Character::SetSecondaryWeapon()
+{
+	if (IsValid(FireWeaponClass))
+	{
+		AlternativeWeapon = GetWorld()->SpawnActor<AHA_Weapon>(FireWeaponClass, GetActorLocation(), GetActorRotation());
+		AlternativeWeapon->SetWeaponOwner(this);
+	}
+}
+
+TSubclassOf<AHA_Weapon> AHA_Character::GetSpear()
+{
+	return MeleeWeaponClass;
 }
 
 /*
@@ -309,7 +361,3 @@ bool AHA_Character::HasKey(FName Keytag)
 	//Checks wether the player has an specific key or not
 	return KeyTags.Contains(Keytag);
 }
-
-
-
-
