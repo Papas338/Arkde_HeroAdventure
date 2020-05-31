@@ -12,6 +12,8 @@ class AHA_Weapon;
 class UAnimMontage;
 class UAnimInstance;
 class UCapsuleComponent;
+class UHA_HealthComponent;
+class AHA_GameMode;
 
 UCLASS()
 class ARKDE_HEROADVENTURE_API AHA_Character : public ACharacter
@@ -36,6 +38,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 		UCapsuleComponent* LeftHandSpearComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+		UHA_HealthComponent* HealthComponent;
 
 	//Variables
 protected:
@@ -98,6 +103,12 @@ protected:
 
 	UPROPERTY()
 		AHA_Weapon* Temp;
+
+	//Gameplay
+	AHA_GameMode* GameModeReference;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Game Over")
+		bool bHasToDestroy;
 
 public:
 
@@ -166,6 +177,10 @@ protected:
 	void SetInitialWeapon();
 	void SetSecondaryWeapon();
 
+	//Stats
+	UFUNCTION()
+	void OnHealthChange(UHA_HealthComponent* ThisHealthComponent, AActor * DamagedActor, float Damage, const UDamageType * DamageType, AController * InstigatedBy, AActor * DamageCauser);
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -182,6 +197,8 @@ public:
 
 	//Gameplay
 	virtual FVector GetPawnViewLocation() const override;
+
+	bool HasToDestroy() { return bHasToDestroy; };
 
 	//Weapons
 	TSubclassOf<AHA_Weapon> GetSpear();

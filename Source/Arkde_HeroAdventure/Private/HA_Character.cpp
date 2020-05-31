@@ -8,7 +8,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
-
+#include "Components/HA_HealthComponent.h"
+#include "Core/HA_GameMode.h"
 #include "Weapons/HA_Weapon.h"
 
 // Sets default values
@@ -38,6 +39,8 @@ AHA_Character::AHA_Character()
 	LeftHandSpearComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 	LeftHandSpearComponent->SetCollisionResponseToChannel(COLLISION_ENEMY,ECR_Overlap);
 	LeftHandSpearComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	HealthComponent = CreateDefaultSubobject<UHA_HealthComponent>(TEXT("HealthComponent"));
 }
 
 // Called when the game starts or when spawned
@@ -49,6 +52,8 @@ void AHA_Character::BeginPlay()
 
 	SetInitialWeapon();
 	SetSecondaryWeapon();
+
+	HealthComponent->OnHealthChangeDelegate.AddDynamic(this, &AHA_Character::OnHealthChange);
 }
 
 // Called every frame
@@ -72,6 +77,8 @@ void AHA_Character::InitializeVariables()
 void AHA_Character::InitializeReferences()
 {
 	MyAnimInstance = GetMesh()->GetAnimInstance();
+
+	GameModeReference = Cast<AHA_GameMode>(GetWorld()->GetAuthGameMode());
 }
 
 /*
@@ -201,6 +208,10 @@ Attacking:
 - StartAttack()
 - StopAttack()
 - SetInitialWeapon()
+- SetSecondaryWeapon()
+
+Stats:
+- OnHealthChange()
 */
 
 //General actions
@@ -333,6 +344,17 @@ void AHA_Character::SetSecondaryWeapon()
 	{
 		AlternativeWeapon = GetWorld()->SpawnActor<AHA_Weapon>(FireWeaponClass, GetActorLocation(), GetActorRotation());
 		AlternativeWeapon->SetWeaponOwner(this);
+	}
+}
+
+void AHA_Character::OnHealthChange(UHA_HealthComponent* ThisHealthComponent, AActor * DamagedActor, float Damage, const UDamageType * DamageType, AController * InstigatedBy, AActor * DamageCauser)
+{
+	if (HealthComponent->IsDead())
+	{
+		if (IsValid(GameModeReference))
+		{
+			GameModeReference->GameOver(this);
+		}
 	}
 }
 
