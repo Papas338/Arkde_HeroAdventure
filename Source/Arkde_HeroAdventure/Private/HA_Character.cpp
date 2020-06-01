@@ -12,6 +12,7 @@
 #include "Core/HA_GameMode.h"
 #include "Weapons/HA_Weapon.h"
 #include "Weapons/HA_Spear.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AHA_Character::AHA_Character()
@@ -324,6 +325,7 @@ void AHA_Character::StartAttack()
 {
 	if (!bIsAiming)
 	{
+		AttackSelected = FMath::RandRange(0, 1);
 		if (bisDoingMelee)
 		{
 			if (bIsComboAvailable)
@@ -364,8 +366,9 @@ void AHA_Character::SetInitialWeapon()
 	//Sets the starter weapon that the player will use 
 	if (IsValid(MeleeWeaponClass))
 	{
-		CurrentWeapon = GetWorld()->SpawnActor<AHA_Weapon>(MeleeWeaponClass, GetActorLocation(), GetActorRotation());
+		CurrentWeapon = GetWorld()->SpawnActorDeferred<AHA_Weapon>(MeleeWeaponClass, FTransform::Identity,this, nullptr);
 		CurrentWeapon->SetWeaponOwner(this);
+		UGameplayStatics::FinishSpawningActor(CurrentWeapon, FTransform::Identity);
 	}
 }
 

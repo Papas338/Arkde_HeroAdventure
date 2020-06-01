@@ -17,10 +17,8 @@ void AHA_Spear::BeginPlay()
 	if (IsValid(CurrentWeaponOwner))
 	{
 		AHA_Character* OwnerCharacter = Cast<AHA_Character>(CurrentWeaponOwner);
-		UE_LOG(LogTemp, Warning, TEXT("Overlaps not added"))
 			if (IsValid(OwnerCharacter))
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Overlaps added"));
 				OwnerCharacter->RightHandSpearComponent->OnComponentBeginOverlap.AddDynamic(this, &AHA_Spear::DealDamage);
 				OwnerCharacter->LeftHandSpearComponent->OnComponentBeginOverlap.AddDynamic(this, &AHA_Spear::DealDamage);
 			}
@@ -32,10 +30,9 @@ void AHA_Spear::StartWeaponAction()
 	if (IsValid(CurrentWeaponOwner))
 	{
 		AHA_Character* OwnerCharacter = Cast<AHA_Character>(CurrentWeaponOwner);
-		int MontageSelected = FMath::RandRange(0, 1);
 		if (IsValid(OwnerCharacter))
 		{
-			OwnerCharacter->MyAnimInstance->Montage_Play(OwnerCharacter->MeleeMontage[MontageSelected]);
+			OwnerCharacter->MyAnimInstance->Montage_Play(OwnerCharacter->MeleeMontage[OwnerCharacter->GetAttackSelected()]);
 			OwnerCharacter->SetDoingMelee(true);
 		}
 	}

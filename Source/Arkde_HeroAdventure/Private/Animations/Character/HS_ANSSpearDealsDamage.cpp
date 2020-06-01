@@ -14,9 +14,20 @@ void UHS_ANSSpearDealsDamage::NotifyBegin(USkeletalMeshComponent * MeshComp, UAn
 		AHA_Character* PlayerCharacter = Cast<AHA_Character>(ThisActor);
 		if (IsValid(PlayerCharacter))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Collisions enabled"))
-			PlayerCharacter->RightHandSpearComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-			PlayerCharacter->LeftHandSpearComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+			switch (PlayerCharacter->GetAttackSelected())
+			{
+			case 0:
+				UE_LOG(LogTemp, Warning, TEXT("Right hand enabled"));
+				PlayerCharacter->RightHandSpearComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+				break;
+			case 1:
+				UE_LOG(LogTemp, Warning, TEXT("Left hand enabled"));
+				PlayerCharacter->LeftHandSpearComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+				break;
+			default:
+				break;
+			}
+
 		}
 	}
 }
@@ -29,7 +40,6 @@ void UHS_ANSSpearDealsDamage::NotifyEnd(USkeletalMeshComponent * MeshComp, UAnim
 		AHA_Character* PlayerCharacter = Cast<AHA_Character>(ThisActor);
 		if (IsValid(PlayerCharacter))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Collisions enabled"))
 			PlayerCharacter->RightHandSpearComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 			PlayerCharacter->LeftHandSpearComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		}

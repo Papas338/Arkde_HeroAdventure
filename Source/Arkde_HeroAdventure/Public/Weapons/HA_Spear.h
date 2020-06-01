@@ -16,7 +16,7 @@ class ARKDE_HEROADVENTURE_API AHA_Spear : public AHA_Weapon
 
 protected:
 // Variables
-
+	
 public:
 	AHA_Spear();
 
@@ -28,4 +28,5 @@ public:
 
 	UFUNCTION()
 	void DealDamage(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
+
 };

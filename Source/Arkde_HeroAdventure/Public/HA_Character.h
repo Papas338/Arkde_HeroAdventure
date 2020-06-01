@@ -116,6 +116,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spear")
 		float MaxComboMultiplier;
 
+	int AttackSelected;
+
 	//Gameplay
 	AHA_GameMode* GameModeReference;
 
@@ -220,4 +222,6 @@ public:
 	void SetComboAvailable(bool NewComboAvailableState);
 
 	void ResetCombo();
+
+	int GetAttackSelected() { return AttackSelected; };
 };
