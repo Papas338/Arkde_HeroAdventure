@@ -104,6 +104,18 @@ protected:
 	UPROPERTY()
 		AHA_Weapon* Temp;
 
+	UPROPERTY(BlueprintReadOnly, Category = "Spear")
+		bool bisDoingMelee;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Spear")
+		bool bIsComboAvailable;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spear")
+		float ComboMultiplier;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spear")
+		float MaxComboMultiplier;
+
 	//Gameplay
 	AHA_GameMode* GameModeReference;
 
@@ -176,7 +188,7 @@ protected:
 	//Weapons
 	void SetInitialWeapon();
 	void SetSecondaryWeapon();
-
+	
 	//Stats
 	UFUNCTION()
 	void OnHealthChange(UHA_HealthComponent* ThisHealthComponent, AActor * DamagedActor, float Damage, const UDamageType * DamageType, AController * InstigatedBy, AActor * DamageCauser);
@@ -202,4 +214,10 @@ public:
 
 	//Weapons
 	TSubclassOf<AHA_Weapon> GetSpear();
+	void SetDoingMelee(bool NewDoingMeleeStatus);
+
+	float GetComboMultiplier() { return ComboMultiplier; };
+	void SetComboAvailable(bool NewComboAvailableState);
+
+	void ResetCombo();
 };

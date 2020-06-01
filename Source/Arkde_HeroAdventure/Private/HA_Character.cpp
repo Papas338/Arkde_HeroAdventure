@@ -11,6 +11,7 @@
 #include "Components/HA_HealthComponent.h"
 #include "Core/HA_GameMode.h"
 #include "Weapons/HA_Weapon.h"
+#include "Weapons/HA_Spear.h"
 
 // Sets default values
 AHA_Character::AHA_Character()
@@ -19,6 +20,11 @@ AHA_Character::AHA_Character()
 
 	RightHandSocket = "SCK_SpearRightHand";
 	LeftHandSocket = "SCK_SpearLeftHand";
+
+	//Melee Weapons
+	ComboMultiplier = 1.0;
+	MaxComboMultiplier = 5.0f;
+	bIsComboAvailable = true;
 
 	//Components initialization
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring_Arm_Component"));
@@ -209,6 +215,9 @@ Attacking:
 - StopAttack()
 - SetInitialWeapon()
 - SetSecondaryWeapon()
+- SetDoingMelee()
+- SetComboAvailable()
+- ResetCombo()
 
 Stats:
 - OnHealthChange()
@@ -313,6 +322,28 @@ FVector AHA_Character::GetPawnViewLocation() const
 
 void AHA_Character::StartAttack()
 {
+	if (!bIsAiming)
+	{
+		if (bisDoingMelee)
+		{
+			if (bIsComboAvailable)
+			{
+				if (ComboMultiplier < MaxComboMultiplier)
+				{
+					ComboMultiplier += 0.5;
+					SetComboAvailable(false);
+				}
+				else
+				{
+					return;
+				}
+			}
+			else
+			{
+				return;
+			}
+		}
+	}
 	//Executes the attack of the selected weapon
 	if (IsValid(CurrentWeapon))
 	{
@@ -345,6 +376,22 @@ void AHA_Character::SetSecondaryWeapon()
 		AlternativeWeapon = GetWorld()->SpawnActor<AHA_Weapon>(FireWeaponClass, GetActorLocation(), GetActorRotation());
 		AlternativeWeapon->SetWeaponOwner(this);
 	}
+}
+
+void AHA_Character::SetDoingMelee(bool NewDoingMeleeStatus)
+{
+	bisDoingMelee = NewDoingMeleeStatus;
+}
+
+void AHA_Character::SetComboAvailable(bool NewComboAvailableState)
+{
+	bIsComboAvailable = NewComboAvailableState;
+}
+
+void AHA_Character::ResetCombo()
+{
+	ComboMultiplier = 1.0f;
+	SetComboAvailable(false);
 }
 
 void AHA_Character::OnHealthChange(UHA_HealthComponent* ThisHealthComponent, AActor * DamagedActor, float Damage, const UDamageType * DamageType, AController * InstigatedBy, AActor * DamageCauser)

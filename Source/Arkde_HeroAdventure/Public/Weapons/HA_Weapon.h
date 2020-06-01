@@ -21,7 +21,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
 		TSubclassOf<UDamageType> DamageType;
 
-		ACharacter* CurrentOwner;
+		ACharacter* CurrentWeaponOwner;
 
 public:	
 	// Sets default values for this actor's properties

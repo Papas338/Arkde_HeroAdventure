@@ -14,16 +14,7 @@ void UHS_ANSpearAttackDone::Notify(USkeletalMeshComponent* MeshComp, UAnimSequen
 		AHA_Character* PlayerCharacter = Cast<AHA_Character>(PlayerActor);
 		if (IsValid(PlayerCharacter))
 		{
-			TSubclassOf<AHA_Weapon> SpearWeaponClass = PlayerCharacter->GetSpear();
-			AHA_Weapon* SpearWeapon = SpearWeaponClass->GetDefaultObject<AHA_Weapon>();
-			if (IsValid(SpearWeapon))
-			{
-				AHA_Spear* UsableWeapon = Cast<AHA_Spear>(SpearWeapon);
-				if (IsValid(UsableWeapon))
-				{
-					UsableWeapon->SetDoingMelee(false);
-				}
-			}
+			PlayerCharacter->SetDoingMelee(false);
 		}
 	}
 }

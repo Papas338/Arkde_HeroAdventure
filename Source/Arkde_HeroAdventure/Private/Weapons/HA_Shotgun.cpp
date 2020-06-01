@@ -41,7 +41,7 @@ void AHA_Shotgun::GenerateShot(FVector Offset)
 
 	FVector EyesLocation;
 	FRotator EyesRotation;
-	CurrentOwner->GetActorEyesViewPoint(EyesLocation, EyesRotation);
+	CurrentWeaponOwner->GetActorEyesViewPoint(EyesLocation, EyesRotation);
 
 	FVector ShotDirection = EyesRotation.Vector();
 	FVector TraceEnd = EyesLocation + (ShotDirection * TraceLenght) + Offset;
@@ -62,12 +62,12 @@ void AHA_Shotgun::GenerateShot(FVector Offset)
 		AActor* HitActor = HitResult.GetActor();
 		if (IsValid(HitActor))
 		{
-			UGameplayStatics::ApplyPointDamage(HitActor, DamageDealt, ShotDirection, HitResult, CurrentOwner->GetInstigatorController(), this, DamageType);
+			UGameplayStatics::ApplyPointDamage(HitActor, DamageDealt, ShotDirection, HitResult, CurrentWeaponOwner->GetInstigatorController(), this, DamageType);
 		}
 
 	}
 
-	USkeletalMeshComponent* CharacterMeshComponent = CurrentOwner->GetMesh();
+	USkeletalMeshComponent* CharacterMeshComponent = CurrentWeaponOwner->GetMesh();
 	if (IsValid(CharacterMeshComponent))
 	{
 		FVector MuzzleSocketLocation = CharacterMeshComponent->GetSocketLocation(MuzzleSocketName);
@@ -79,7 +79,7 @@ void AHA_Shotgun::GenerateShot(FVector Offset)
 		}
 	}
 
-	UGameplayStatics::SpawnEmitterAttached(ShootEffect, CurrentOwner->GetMesh(), MuzzleSocketName);
+	UGameplayStatics::SpawnEmitterAttached(ShootEffect, CurrentWeaponOwner->GetMesh(), MuzzleSocketName);
 
 
 	if (bDrawLine)

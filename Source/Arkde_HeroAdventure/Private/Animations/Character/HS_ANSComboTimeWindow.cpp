@@ -14,16 +14,7 @@ void UHS_ANSComboTimeWindow::NotifyBegin(USkeletalMeshComponent * MeshComp, UAni
 		AHA_Character* PlayerCharacter = Cast<AHA_Character>(ThisActor);
 		if (IsValid(PlayerCharacter))
 		{
-			TSubclassOf<AHA_Weapon> SpearWeaponClass = PlayerCharacter->GetSpear();
-			AHA_Weapon* SpearWeapon = SpearWeaponClass->GetDefaultObject<AHA_Weapon>();
-			if (IsValid(SpearWeapon))
-			{
-				AHA_Spear* UsableWeapon = Cast<AHA_Spear>(SpearWeapon);
-				if (IsValid(UsableWeapon))
-				{
-					UsableWeapon->SetComboAvailable(true);
-				}
-			}
+			PlayerCharacter->SetComboAvailable(true);
 		}
 	}
 }
@@ -36,16 +27,7 @@ void UHS_ANSComboTimeWindow::NotifyEnd(USkeletalMeshComponent * MeshComp, UAnimS
 		AHA_Character* PlayerCharacter = Cast<AHA_Character>(ThisActor);
 		if (IsValid(PlayerCharacter))
 		{
-			TSubclassOf<AHA_Weapon> SpearWeaponClass = PlayerCharacter->GetSpear();
-			AHA_Weapon* SpearWeapon = SpearWeaponClass->GetDefaultObject<AHA_Weapon>();
-			if (IsValid(SpearWeapon))
-			{
-				AHA_Spear* UsableWeapon = Cast<AHA_Spear>(SpearWeapon);
-				if (IsValid(UsableWeapon))
-				{
-					UsableWeapon->ResetCombo();
-				}
-			}
+			PlayerCharacter->ResetCombo();
 		}
 	}
 }

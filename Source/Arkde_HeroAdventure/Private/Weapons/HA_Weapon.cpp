@@ -39,6 +39,6 @@ void AHA_Weapon::StopWeaponAction()
 void AHA_Weapon::SetWeaponOwner(ACharacter* WeaponOwner)
 {
 	SetOwner(WeaponOwner);
-	CurrentOwner = WeaponOwner;
+	CurrentWeaponOwner = WeaponOwner;
 }
 
