@@ -7,6 +7,7 @@
 #include "HA_Weapon.generated.h"
 
 class UDamageType;
+class ACharacter;
 
 UCLASS()
 class ARKDE_HEROADVENTURE_API AHA_Weapon : public AActor

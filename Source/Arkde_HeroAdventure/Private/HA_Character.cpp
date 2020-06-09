@@ -13,6 +13,7 @@
 #include "Weapons/HA_Weapon.h"
 #include "Weapons/HA_Spear.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/HA_UltimateAbilityComponent.h"
 
 // Sets default values
 AHA_Character::AHA_Character()
@@ -26,6 +27,13 @@ AHA_Character::AHA_Character()
 	ComboMultiplier = 1.0;
 	MaxComboMultiplier = 5.0f;
 	bIsComboAvailable = true;
+
+	//Ultimate
+	MaxUltimateCharge = 210.0f; //This one is given in seconds
+	MaxUltimateDuration = 4.0f;
+	UltimateDurationFrecuency = 0.5f;
+	NormalSpeed = GetCharacterMovement()->MaxWalkSpeed;
+	PlayerVelocity = GetCharacterMovement()->Velocity;
 
 	//Components initialization
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring_Arm_Component"));
@@ -48,6 +56,8 @@ AHA_Character::AHA_Character()
 	LeftHandSpearComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	HealthComponent = CreateDefaultSubobject<UHA_HealthComponent>(TEXT("HealthComponent"));
+
+	//UltimateAbilityComponent = CreateDefaultSubobject<UHA_UltimateAbilityComponent>(TEXT("UltimateAbilityComponent"));
 }
 
 // Called when the game starts or when spawned
@@ -59,6 +69,7 @@ void AHA_Character::BeginPlay()
 
 	SetInitialWeapon();
 	SetSecondaryWeapon();
+	SetUltimateWeapon();
 
 	HealthComponent->OnHealthChangeDelegate.AddDynamic(this, &AHA_Character::OnHealthChange);
 }
@@ -67,6 +78,11 @@ void AHA_Character::BeginPlay()
 void AHA_Character::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (!bIsUsingUltimate)
+	{
+		UpdateUltimateCharge(DeltaTime);
+	}
 }
 
 /*
@@ -79,6 +95,9 @@ void AHA_Character::InitializeVariables()
 	defaultGroundFriction = GetCharacterMovement()->GroundFriction;
 	bIsEvadeAvailable = true;
 	walkSpeed = 1.0f;
+
+	CurrentUltimateCharge = 0.0f;
+	CurrentUltimateDuration = MaxUltimateDuration;
 }
 
 void AHA_Character::InitializeReferences()
@@ -125,6 +144,10 @@ void AHA_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	//Weapon gameplay
 	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &AHA_Character::StartAttack);
 	PlayerInputComponent->BindAction("Attack", IE_Released, this, &AHA_Character::StopAttack);
+
+	//Ultimate
+	PlayerInputComponent->BindAction("Ultimate", IE_Pressed, this, &AHA_Character::StartUltimate);
+	PlayerInputComponent->BindAction("Ultimate", IE_Released, this, &AHA_Character::StopUltimate);
 }
 
 void AHA_Character::AddControllerPitchInput(float value) {
@@ -183,7 +206,7 @@ void AHA_Character::SetPlayerRotation()
 {
 	//Since movement and camera are not linked this function allows the player to face the direction
 	//They are walking towards unless it's aiming
-	if (bIsAiming)
+	if (bIsAiming || bIsUsingUltimate)
 	{
 		return;
 	}
@@ -216,12 +239,20 @@ Attacking:
 - StopAttack()
 - SetInitialWeapon()
 - SetSecondaryWeapon()
+- SetUltimateWeapon()
 - SetDoingMelee()
 - SetComboAvailable()
 - ResetCombo()
 
 Stats:
 - OnHealthChange()
+
+Ultimate Ability:
+- UpdateUltimateCharge()
+- StartUltimate()
+- StopUltimate()
+- UpdateUltimateDuration()
+- UltimateBehaviour()
 */
 
 //General actions
@@ -268,6 +299,10 @@ void AHA_Character::RestoreFriction()
 //Attacking
 void AHA_Character::Aiming()
 {
+	if (bIsUsingUltimate)
+	{
+		return;
+	}
 	//Sets the fire weapon as the main one
 	Temp = CurrentWeapon;
 	CurrentWeapon = AlternativeWeapon;
@@ -291,6 +326,10 @@ void AHA_Character::Aiming()
 
 void AHA_Character::StopAiming()
 {
+	if (bIsUsingUltimate)
+	{
+		return;
+	}
 	//Sets the melee weapon as the main one
 	Temp = CurrentWeapon;
 	CurrentWeapon = AlternativeWeapon;
@@ -323,6 +362,10 @@ FVector AHA_Character::GetPawnViewLocation() const
 
 void AHA_Character::StartAttack()
 {
+	if (bIsUsingUltimate)
+	{
+		return;
+	}
 	if (!bIsAiming)
 	{
 		AttackSelected = FMath::RandRange(0, 1);
@@ -381,6 +424,15 @@ void AHA_Character::SetSecondaryWeapon()
 	}
 }
 
+void AHA_Character::SetUltimateWeapon()
+{
+	if (IsValid(UltimateWeaponClass))
+	{
+		UltimateWeapon = GetWorld()->SpawnActor<AHA_Weapon>(UltimateWeaponClass, GetActorLocation(), GetActorRotation());
+		UltimateWeapon->SetWeaponOwner(this);
+	}
+}
+
 void AHA_Character::SetDoingMelee(bool NewDoingMeleeStatus)
 {
 	bisDoingMelee = NewDoingMeleeStatus;
@@ -408,9 +460,103 @@ void AHA_Character::OnHealthChange(UHA_HealthComponent* ThisHealthComponent, AAc
 	}
 }
 
-TSubclassOf<AHA_Weapon> AHA_Character::GetSpear()
+void AHA_Character::UpdateUltimateCharge(float Value)
 {
-	return MeleeWeaponClass;
+	if (!bIsUsingUltimate)
+	{
+		CurrentUltimateCharge = FMath::Clamp(CurrentUltimateCharge + Value, 0.0f, MaxUltimateCharge);
+		if (CurrentUltimateCharge == MaxUltimateCharge)
+		{
+			bCanUseUltimate = true;
+		}
+	}
+}
+
+void AHA_Character::StartUltimate()
+{
+	if (bCanUseUltimate && !bIsUsingUltimate)
+	{
+		bIsUsingUltimate = true;
+		CurrentUltimateCharge = 0.0f;
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle_Ultimate, this, &AHA_Character::UpdateUltimateDuration, UltimateDurationFrecuency, true);
+		UE_LOG(LogTemp, Warning, TEXT("Ultimated started"))
+		UltimateBehaviour();
+	}
+}
+
+void AHA_Character::StopUltimate()
+{
+
+}
+
+void AHA_Character::UpdateUltimateDuration()
+{
+	CurrentUltimateDuration = FMath::Clamp(CurrentUltimateDuration - UltimateDurationFrecuency, 0.0f, MaxUltimateDuration);
+	if (CurrentUltimateDuration == 0)
+	{
+		bIsUsingUltimate = false;
+		GetWorld()->GetTimerManager().ClearTimer(TimerHandle_Ultimate);
+		CurrentUltimateDuration = MaxUltimateDuration;
+		RestorePlayer();
+		UE_LOG(LogTemp, Warning, TEXT("Ultimate finished"))
+	}
+	BP_UpdateUltimateDuration();
+}
+
+void AHA_Character::UltimateBehaviour()
+{
+	GetCharacterMovement()->GravityScale = 0;
+	GetCharacterMovement()->MaxWalkSpeed = 0;
+	GetCharacterMovement()->Velocity = FVector(0,0,0);
+	FVector UltimateLocation = GetActorLocation() + FVector(0.0f, 0.0f, 250.0f);
+	SetActorLocation(UltimateLocation);
+
+	
+	//Rotation
+	tempRotation = GetMesh()->GetRelativeRotation();
+	GetMesh()->SetUsingAbsoluteRotation(false);
+	GetMesh()->SetRelativeRotation(SpringArmComponent->GetRelativeRotation() + FRotator(0, -90, 0));
+
+	//Camera
+	SpringArmComponent->TargetArmLength = 150;
+	SpringArmComponent->SocketOffset.Y = 70;
+	SpringArmComponent->SocketOffset.Z = 20;
+
+	MyAnimInstance->Montage_Play(UltimateMontage);
+	MyAnimInstance->Montage_Pause(UltimateMontage);
+
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle_CannonShot, this, &AHA_Character::ShootCannon, 0.1f, true);
+}
+
+void AHA_Character::RestorePlayer()
+{
+	GetWorld()->GetTimerManager().ClearTimer(TimerHandle_CannonShot);
+	float UltimateAnimationDuration = MyAnimInstance->Montage_Play(UltimateMontage);
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle_CannonShot, this, &AHA_Character::RestoreMovement, UltimateAnimationDuration, false);
+	GetCharacterMovement()->GravityScale = 1;
+	
+	//Rotation
+	GetMesh()->SetUsingAbsoluteRotation(true);
+	GetMesh()->SetRelativeRotation(tempRotation);
+
+	//Camera
+	SpringArmComponent->TargetArmLength = 300;
+	SpringArmComponent->SocketOffset.Y = 0;
+	SpringArmComponent->SocketOffset.Z = 0;
+}
+
+void AHA_Character::RestoreMovement()
+{
+	GetCharacterMovement()->MaxWalkSpeed = NormalSpeed;
+	GetCharacterMovement()->Velocity = PlayerVelocity;
+}
+
+void AHA_Character::ShootCannon()
+{
+	if (IsValid(UltimateWeapon))
+	{
+		UltimateWeapon->StartWeaponAction();
+	}
 }
 
 /*

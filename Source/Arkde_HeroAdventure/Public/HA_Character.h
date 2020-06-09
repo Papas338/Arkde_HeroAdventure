@@ -14,6 +14,7 @@ class UAnimInstance;
 class UCapsuleComponent;
 class UHA_HealthComponent;
 class AHA_GameMode;
+class UHA_UltimateAbilityComponent;
 
 UCLASS()
 class ARKDE_HEROADVENTURE_API AHA_Character : public ACharacter
@@ -33,14 +34,19 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 		USpringArmComponent* SpringArmComponent;
 
+	//Weapons
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 		UCapsuleComponent* RightHandSpearComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 		UCapsuleComponent* LeftHandSpearComponent;
 
+	//Gameplay
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 		UHA_HealthComponent* HealthComponent;
+
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+		//UHA_UltimateAbilityComponent* UltimateAbilityComponent;
 
 	//Variables
 protected:
@@ -84,6 +90,37 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Movement|Evade")
 		bool bIsEvadeAvailable;
 
+	//Ultimate
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ultimate", meta = (ClampMin = 0.0, UIMin = 0.0))
+		float MaxUltimateCharge;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Ultimate")
+		float CurrentUltimateCharge;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ultimate|Timer", meta = (ClampMin = 0.0, UIMin = 0.0))
+		float MaxUltimateDuration;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Ultimate|Timer")
+		float CurrentUltimateDuration;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Ultimate")
+		bool bCanUseUltimate;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Ultimate")
+		bool bIsUsingUltimate;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Ultimate|Timer")
+		float UltimateDurationFrecuency;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Ultimate")
+		float NormalSpeed;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Ultimate")
+		FVector PlayerVelocity;
+
+	FTimerHandle TimerHandle_Ultimate;
+	FTimerHandle TimerHandle_CannonShot;
+
 	//Pickups
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Key")
 		TArray<FName> KeyTags;
@@ -100,6 +137,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
 		AHA_Weapon* AlternativeWeapon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+		AHA_Weapon* UltimateWeapon;
 
 	UPROPERTY()
 		AHA_Weapon* Temp;
@@ -141,6 +181,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation")
 		TArray<UAnimMontage*> MeleeMontage;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation")
+		UAnimMontage* UltimateMontage;
+
 	UAnimInstance* MyAnimInstance;
 
 	//Weapons
@@ -150,6 +193,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
 		TSubclassOf<AHA_Weapon> FireWeaponClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+		TSubclassOf<AHA_Weapon> UltimateWeaponClass;
 	
 protected:
 	// Called when the game starts or when spawned
@@ -190,6 +236,19 @@ protected:
 	//Weapons
 	void SetInitialWeapon();
 	void SetSecondaryWeapon();
+	void SetUltimateWeapon();
+
+	//Ultimate Ability
+	void UpdateUltimateCharge(float Value);
+	void StartUltimate();
+	void StopUltimate();
+	void UpdateUltimateDuration();
+	void UltimateBehaviour();
+	void RestorePlayer();
+	void RestoreMovement();
+	void ShootCannon();
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void BP_UpdateUltimateDuration();
 	
 	//Stats
 	UFUNCTION()
@@ -215,7 +274,6 @@ public:
 	bool HasToDestroy() { return bHasToDestroy; };
 
 	//Weapons
-	TSubclassOf<AHA_Weapon> GetSpear();
 	void SetDoingMelee(bool NewDoingMeleeStatus);
 
 	float GetComboMultiplier() { return ComboMultiplier; };

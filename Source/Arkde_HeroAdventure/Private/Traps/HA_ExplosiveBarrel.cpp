@@ -30,12 +30,12 @@ void AHA_ExplosiveBarrel::OnHitReceived(UHA_HealthComponent * ThisHealthComponen
 		{
 			if (!bExploded)
 			{
-
+				bExploded = true;
 				TArray<AActor*> IgnoredActors;
 				UE_LOG(LogTemp, Warning, TEXT("KABOOM"))
 				UGameplayStatics::ApplyRadialDamage(GetWorld(), TrapDamage, GetActorLocation(), DamageRadius, TrapDamageType, IgnoredActors, this, thisController);
 				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), TrapEffect, GetActorLocation());
-				bExploded = true;
+				
 				GameModeReference->DestroySceneObject(this, 0.1f);
 			}
 		}
