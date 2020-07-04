@@ -32,6 +32,7 @@ void UHA_HealthComponent::DamageTaken(AActor * DamagedActor, float Damage, const
 
 	if (CurrentHealth == 0.0)
 	{
+		UE_LOG(LogTemp, Log, TEXT("F"))
 		bIsDead = true;
 	}
 

@@ -16,6 +16,13 @@ class UHA_HealthComponent;
 class AHA_GameMode;
 class UHA_UltimateAbilityComponent;
 
+UENUM(Blueprintable)
+enum class EHA_CharacterType : uint8
+{
+	CharacterType_Player	UMETA(DisplayName = "Player"),
+	CharacterType_Enemy		UMETA(DisplayName = "Enemy")
+};
+
 UCLASS()
 class ARKDE_HEROADVENTURE_API AHA_Character : public ACharacter
 {
@@ -50,6 +57,9 @@ public:
 
 	//Variables
 protected:
+	//Player variables
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Basic elements")
+		EHA_CharacterType CharacterType;
 
 	//Player Basic Movement
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Aiming")
@@ -257,6 +267,10 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	//Character
+	UFUNCTION(BlueprintCallable)
+	EHA_CharacterType GetCharacterType() { return CharacterType; };
 
 	//Input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
