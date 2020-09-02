@@ -184,7 +184,7 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Gameplay")
 		bool bIsDoingAction;
 	
-	UPROPERTY(BlueprintReadOnly, Category = "Gameplay")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gameplay")
 		bool bIsAiming;
 
 	//Animations
@@ -240,6 +240,7 @@ protected:
 	void StopAiming();
 
 	//Attack
+	UFUNCTION(BlueprintCallable)
 	void StartAttack();
 	void StopAttack();
 

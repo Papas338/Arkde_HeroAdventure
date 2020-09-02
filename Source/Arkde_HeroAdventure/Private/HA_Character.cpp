@@ -366,8 +366,10 @@ void AHA_Character::StartAttack()
 	{
 		return;
 	}
+	
 	if (!bIsAiming)
 	{
+		//Spear attack
 		AttackSelected = FMath::RandRange(0, 1);
 		if (bisDoingMelee)
 		{
