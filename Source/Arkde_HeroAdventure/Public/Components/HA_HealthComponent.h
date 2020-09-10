@@ -46,4 +46,6 @@ public:
 	void DamageTaken(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
 	bool IsDead() const { return bIsDead; };
+
+	float GetCurrentHealth() { return CurrentHealth; };
 };
