@@ -26,7 +26,8 @@ void AHA_Bot::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	
+
+	FindEnemies();
 }
 
 void AHA_Bot::FindEnemies()
@@ -49,7 +50,6 @@ void AHA_Bot::FindEnemies()
 void AHA_Bot::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	FindEnemies();
 }
 
 FVector AHA_Bot::LowestHealthEnemyPosition()
@@ -60,8 +60,9 @@ FVector AHA_Bot::LowestHealthEnemyPosition()
 
 	for (int i = 0; i < EnemyArray.Num(); i++)
  	{
-		if ((i + 1) < EnemyArray.Num())
+		if ((i + 1) < EnemyArray.Num()) //Stops the array from going out of bounds
 		{
+			//Checks if the first enemy it's a Bot or not
 			if (IsValid(Cast<AHA_Enemy>(EnemyArray[i])))
 			{
 				AHA_Enemy* Enemy = Cast<AHA_Enemy>(EnemyArray[i]);
@@ -73,6 +74,7 @@ FVector AHA_Bot::LowestHealthEnemyPosition()
 				Enemy1Health = Enemy->HealthComponent->GetCurrentHealth();
 			}
 
+			//Checks if the second enemy it's a Bot or not
 			if (IsValid(Cast<AHA_Enemy>(EnemyArray[i + 1])))
 			{
 				AHA_Enemy* Enemy2 = Cast<AHA_Enemy>(EnemyArray[i + 1]);
@@ -83,7 +85,8 @@ FVector AHA_Bot::LowestHealthEnemyPosition()
 				AHA_Bot* Enemy2 = Cast<AHA_Bot>(EnemyArray[i + 1]);
 				Enemy2Health = Enemy2->HealthComponent->GetCurrentHealth();
 			}
- 
+			
+			//Health comparison to know which one has less health
 			if (Enemy1Health < Enemy2Health)
 			{
 				EnemyNumber = i;
@@ -95,30 +98,30 @@ FVector AHA_Bot::LowestHealthEnemyPosition()
 		}
 	}
 
-	UE_LOG(LogTemp, Log, TEXT("Enemy selected: %d"), EnemyNumber)
-
-//	float LowestHealth;
-
- 	if (IsValid(Cast<AHA_Enemy>(EnemyArray[EnemyNumber])))
- 	{
-// 		AHA_Enemy* LowestHealthEnemy = Cast<AHA_Enemy>(EnemyArray[EnemyNumber]);
-// 		LowestHealth = LowestHealthEnemy->HealthComponent->GetCurrentHealth();
-// 		
-// 		if (LowestHealth != 100)
-// 		{
-// 			return LowestHealthEnemy->GetActorLocation();
-// 		}
+	UE_LOG(LogTemp, Log, TEXT("Amount of enemies: %d"), EnemyArray.Num())
+	
+	float LowestHealth;
+	//Selects the enemy with the lowest health
+	if (IsValid(Cast<AHA_Enemy>(EnemyArray[EnemyNumber])))
+	{
+ 		AHA_Enemy* LowestHealthEnemy = Cast<AHA_Enemy>(EnemyArray[EnemyNumber]);
+ 		LowestHealth = LowestHealthEnemy->HealthComponent->GetCurrentHealth();
+ 		
+ 		if (LowestHealth != 100 && LowestHealth != 0)
+ 		{
+ 			return LowestHealthEnemy->GetActorLocation();
+ 		}
  	}
-// 	else if (IsValid(Cast<AHA_Bot>(EnemyArray[EnemyNumber])))
-// 	{
-// 		AHA_Bot* LowestHealthEnemy = Cast<AHA_Bot>(EnemyArray[EnemyNumber]);
-// 		LowestHealth = LowestHealthEnemy->HealthComponent->GetCurrentHealth();
-// 		
-// 		if (LowestHealth != 100)
-// 		{
-// 			return LowestHealthEnemy->GetActorLocation();
-// 		}
-// 	}
+ 	else if (IsValid(Cast<AHA_Bot>(EnemyArray[EnemyNumber])))
+ 	{
+ 		AHA_Bot* LowestHealthEnemy = Cast<AHA_Bot>(EnemyArray[EnemyNumber]);
+ 		LowestHealth = LowestHealthEnemy->HealthComponent->GetCurrentHealth();
+ 		
+ 		if (LowestHealth != 100 && LowestHealth != 0)
+ 		{
+ 			return LowestHealthEnemy->GetActorLocation();
+ 		}
+ 	}
 	return GetActorLocation();
 }
 
