@@ -25,7 +25,7 @@ void UHA_HealthComponent::DamageTaken(AActor * DamagedActor, float Damage, const
 {
 	if (bBotActive)
 	{
-		Damage /= 0.8;
+		Damage /= DamageReduction;
 		UE_LOG(LogTemp, Log, TEXT("Damage applied: %s"), *FString::SanitizeFloat(Damage))
 	}
 	CurrentHealth = FMath::Clamp(CurrentHealth - Damage, 0.0f, MaxHealth);
@@ -43,7 +43,8 @@ void UHA_HealthComponent::DamageTaken(AActor * DamagedActor, float Damage, const
 	}
 }
 
-void UHA_HealthComponent::SetBotAffected(bool bIsAffected)
+void UHA_HealthComponent::SetBotAffected(bool bIsAffected, float BotDamageReduction)
 {
 	bBotActive = bIsAffected;
+	DamageReduction = BotDamageReduction;
 }

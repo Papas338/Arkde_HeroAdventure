@@ -49,6 +49,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Healing")
 		float HealingAmount;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Healing")
+		float DamageReduction;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemies")
 		TSubclassOf<AActor> EnemyClass;
 

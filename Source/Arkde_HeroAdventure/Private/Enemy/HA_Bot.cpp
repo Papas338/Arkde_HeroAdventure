@@ -99,7 +99,7 @@ void AHA_Bot::ActivateResistance()
 		AHA_Enemy* Enemy = Cast<AHA_Enemy>(SelectedActor);
 		if (IsValid(Enemy))
 		{
-			Enemy->HealthComponent->SetBotAffected(!bIsHealing);
+			Enemy->HealthComponent->SetBotAffected(!bIsHealing,DamageReduction);
 		}
 	}
 }

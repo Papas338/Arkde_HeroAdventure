@@ -34,6 +34,9 @@ protected:
 		float MaxHealth;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Health Component")
+		float DamageReduction;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Health Component")
 	AActor* MyOwner;
 
 public:
@@ -52,5 +55,5 @@ public:
 
 	float GetCurrentHealth() { return CurrentHealth; };
 
-	void SetBotAffected(bool bIsAffected);
+	void SetBotAffected(bool bIsAffected, float BotDamageReduction);
 };
