@@ -37,11 +37,25 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Enemies")
 		FVector EnemyLocation;
 
+	UPROPERTY(BlueprintReadOnly, Category = "Path")
+		FVector NextPathPoint;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement")
+		float MovementSpeed;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement")
+		float MinDistanceToEnemy;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Healing")
+		float HealingAmount;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemies")
 		TSubclassOf<AActor> EnemyClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemies")
 		TSubclassOf<AActor> BotClass;
+
+	TSubclassOf<UDamageType> BotDamageType;
 
 	UPROPERTY(BlueprintReadOnly)
 		TArray<AActor*> EnemyArray;
@@ -49,8 +63,22 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 		TArray<AActor*> BotArray;
 
+	UPROPERTY(BlueprintReadOnly)
+		AHA_Enemy* LowestHealthEnemy;
+
+	UPROPERTY(BlueprintReadOnly)
+	AHA_Enemy* EnemyHealed;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 		EHA_BotType BotType;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Healing")
+		bool bIsHealing;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Debug")
+		bool bDebug;
+
+	FTimerHandle TimerHandle_Healing;
 
 public:
 	// Sets default values for this pawn's properties
@@ -62,6 +90,16 @@ protected:
 
 	void FindEnemies();
 
+	UFUNCTION(BlueprintCallable)
+	FVector GetNextPoint();
+	
+	UFUNCTION()
+	void HealAlly(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
+
+	void HealingStarted();
+
+	void ActivateResistance();
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -71,4 +109,5 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		EHA_BotType GetCharacterType() { return BotType; };
+
 };

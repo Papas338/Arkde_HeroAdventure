@@ -7,18 +7,28 @@
 #include "Components/HA_HealthComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Enemy/HA_Enemy.h"
+#include "NavigationSystem/Public/NavigationSystem.h"
+#include "NavigationSystem/Public/NavigationPath.h"
+#include "DrawDebugHelpers.h"
 
 // Sets default values
 AHA_Bot::AHA_Bot()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	HitBoxComponent = CreateDefaultSubobject<USphereComponent>(TEXT("HitboxComponent"));
-	RootComponent = HitBoxComponent;
+	
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
-	MeshComponent->SetupAttachment(HitBoxComponent);
+	MeshComponent->SetCanEverAffectNavigation(false);
+	MeshComponent->SetSimulatePhysics(true);
+
+	RootComponent = MeshComponent;
+
+	HitBoxComponent = CreateDefaultSubobject<USphereComponent>(TEXT("HitboxComponent"));
+	HitBoxComponent->SetupAttachment(RootComponent);
 
 	HealthComponent = CreateDefaultSubobject<UHA_HealthComponent>(TEXT("HealthComponent"));
+
+	bIsHealing = false;
 }
 
 // Called when the game starts or when spawned
@@ -26,102 +36,121 @@ void AHA_Bot::BeginPlay()
 {
 	Super::BeginPlay();
 	
-
 	FindEnemies();
+	LowestHealthEnemy = Cast<AHA_Enemy>(EnemyArray[0]);
+
+	NextPathPoint = GetNextPoint();
+
+	HitBoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AHA_Bot::HealAlly);
 }
 
 void AHA_Bot::FindEnemies()
 {
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), EnemyClass, EnemyArray);
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), BotClass, BotArray);
-	
-	for (int i=0; i <BotArray.Num();i++)
+		
+}
+
+FVector AHA_Bot::GetNextPoint()
+{
+ 	UNavigationPath* NavPath = UNavigationSystemV1::FindPathToLocationSynchronously(GetWorld(), GetActorLocation(), LowestHealthEnemyPosition());
+ 	if (NavPath->PathPoints.Num() > 1)
+ 	{
+ 		return NavPath->PathPoints[1];
+ 	}
+	return GetActorLocation();
+}
+
+void AHA_Bot::HealAlly(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
+{
+	EnemyHealed = Cast<AHA_Enemy>(OtherActor);
+	if (IsValid(EnemyHealed))
 	{
-		AHA_Bot* Bot = Cast<AHA_Bot>(BotArray[i]);
-		if (GetCharacterType() == EHA_BotType::BotType_Enemy)
+		if ((EnemyHealed->HealthComponent->GetCurrentHealth() <= 100) && (EnemyHealed->GetCharacterType() == EHA_CharacterType::CharacterType_Enemy))
 		{
-			EnemyArray.Add(BotArray[i]);
+			GetWorld()->GetTimerManager().SetTimer(TimerHandle_Healing, this, &AHA_Bot::HealingStarted, 1, true);
+			UE_LOG(LogTemp, Log, TEXT("Sanacion"))
+				bIsHealing = true;
+		}
+		else
+		{
+			GetWorld()->GetTimerManager().ClearTimer(TimerHandle_Healing);
+			UE_LOG(LogTemp, Log, TEXT("No sanacion"))
 		}
 	}
 	
+}
+
+void AHA_Bot::HealingStarted()
+{
+	if (EnemyHealed->HealthComponent->GetCurrentHealth() >= 100)
+	{
+		bIsHealing = false;
+		return;
+	}
+	TArray<AActor*> IgnoredActors;
+	UGameplayStatics::ApplyRadialDamage(GetWorld(), -HealingAmount, GetActorLocation(), 100, BotDamageType, IgnoredActors, this, GetInstigatorController(), true);
+	UE_LOG(LogTemp, Log, TEXT("Healing"))
+}
+
+void AHA_Bot::ActivateResistance()
+{
+	for (AActor* SelectedActor : EnemyArray)
+	{
+		AHA_Enemy* Enemy = Cast<AHA_Enemy>(SelectedActor);
+		if (IsValid(Enemy))
+		{
+			Enemy->HealthComponent->SetBotAffected(!bIsHealing);
+		}
+	}
 }
 
 // Called every frame
 void AHA_Bot::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+	FindEnemies();
+	ActivateResistance();
+	float DistanceToTarget = (NextPathPoint - GetActorLocation()).Size();
+	if (DistanceToTarget <= MinDistanceToEnemy)
+	{
+		NextPathPoint = GetNextPoint();
+	}
+	else {
+		FVector ForceDirection = NextPathPoint - GetActorLocation();
+		ForceDirection.Normalize();
+		ForceDirection *= MovementSpeed;
+		MeshComponent->AddForce(ForceDirection, NAME_None, true);
+	}
 }
 
 FVector AHA_Bot::LowestHealthEnemyPosition()
 {
-	int EnemyNumber = 0;
-	float Enemy1Health = 0;
-	float Enemy2Health = 0;
-
 	for (int i = 0; i < EnemyArray.Num(); i++)
  	{
-		if ((i + 1) < EnemyArray.Num()) //Stops the array from going out of bounds
+		AHA_Enemy* Enemy = Cast<AHA_Enemy>(EnemyArray[i]);
+		
+		if (IsValid(Enemy) && IsValid(LowestHealthEnemy))
 		{
-			//Checks if the first enemy it's a Bot or not
-			if (IsValid(Cast<AHA_Enemy>(EnemyArray[i])))
+			float Enemy1Health = Enemy->HealthComponent->GetCurrentHealth();
+			float LowestHealth = LowestHealthEnemy->HealthComponent->GetCurrentHealth();
+			if (Enemy1Health < LowestHealth)
 			{
-				AHA_Enemy* Enemy = Cast<AHA_Enemy>(EnemyArray[i]);
-				Enemy1Health = Enemy->HealthComponent->GetCurrentHealth();
-			}
-			else if (IsValid(Cast<AHA_Bot>(EnemyArray[i])))
-			{
-				AHA_Bot* Enemy = Cast<AHA_Bot>(EnemyArray[i]);
-				Enemy1Health = Enemy->HealthComponent->GetCurrentHealth();
-			}
-
-			//Checks if the second enemy it's a Bot or not
-			if (IsValid(Cast<AHA_Enemy>(EnemyArray[i + 1])))
-			{
-				AHA_Enemy* Enemy2 = Cast<AHA_Enemy>(EnemyArray[i + 1]);
-				Enemy2Health = Enemy2->HealthComponent->GetCurrentHealth();
-			}
-			else if (IsValid(Cast<AHA_Bot>(EnemyArray[i + 1])))
-			{
-				AHA_Bot* Enemy2 = Cast<AHA_Bot>(EnemyArray[i + 1]);
-				Enemy2Health = Enemy2->HealthComponent->GetCurrentHealth();
-			}
-			
-			//Health comparison to know which one has less health
-			if (Enemy1Health < Enemy2Health)
-			{
-				EnemyNumber = i;
-			}
-			else
-			{
-				EnemyNumber = i + 1;
+				LowestHealthEnemy = Enemy;
 			}
 		}
 	}
-
-	UE_LOG(LogTemp, Log, TEXT("Amount of enemies: %d"), EnemyArray.Num())
-	
-	float LowestHealth;
-	//Selects the enemy with the lowest health
-	if (IsValid(Cast<AHA_Enemy>(EnemyArray[EnemyNumber])))
+	if (IsValid(LowestHealthEnemy))
 	{
- 		AHA_Enemy* LowestHealthEnemy = Cast<AHA_Enemy>(EnemyArray[EnemyNumber]);
- 		LowestHealth = LowestHealthEnemy->HealthComponent->GetCurrentHealth();
- 		
- 		if (LowestHealth != 100 && LowestHealth != 0)
- 		{
- 			return LowestHealthEnemy->GetActorLocation();
- 		}
- 	}
- 	else if (IsValid(Cast<AHA_Bot>(EnemyArray[EnemyNumber])))
- 	{
- 		AHA_Bot* LowestHealthEnemy = Cast<AHA_Bot>(EnemyArray[EnemyNumber]);
- 		LowestHealth = LowestHealthEnemy->HealthComponent->GetCurrentHealth();
- 		
- 		if (LowestHealth != 100 && LowestHealth != 0)
- 		{
- 			return LowestHealthEnemy->GetActorLocation();
- 		}
- 	}
+		if (LowestHealthEnemy->HealthComponent->GetCurrentHealth() != 100 && LowestHealthEnemy->HealthComponent->GetCurrentHealth() != 0)
+		{
+			return LowestHealthEnemy->GetActorLocation();
+		}
+	}
+	else
+	{
+		LowestHealthEnemy = Cast<AHA_Enemy>(EnemyArray[0]);
+	}
 	return GetActorLocation();
 }
 

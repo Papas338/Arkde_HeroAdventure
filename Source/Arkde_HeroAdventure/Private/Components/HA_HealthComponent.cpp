@@ -23,16 +23,15 @@ void UHA_HealthComponent::BeginPlay()
 
 void UHA_HealthComponent::DamageTaken(AActor * DamagedActor, float Damage, const UDamageType * DamageType, AController * InstigatedBy, AActor * DamageCauser)
 {
-	if (Damage <= 0)
+	if (bBotActive)
 	{
-		return;
+		Damage /= 0.8;
+		UE_LOG(LogTemp, Log, TEXT("Damage applied: %s"), *FString::SanitizeFloat(Damage))
 	}
-
 	CurrentHealth = FMath::Clamp(CurrentHealth - Damage, 0.0f, MaxHealth);
 
 	if (CurrentHealth == 0.0)
 	{
-		UE_LOG(LogTemp, Log, TEXT("F"))
 		bIsDead = true;
 	}
 
@@ -42,4 +41,9 @@ void UHA_HealthComponent::DamageTaken(AActor * DamagedActor, float Damage, const
 	{
 		UE_LOG(LogTemp, Log, TEXT("My health is: %s"), *FString::SanitizeFloat(CurrentHealth))
 	}
+}
+
+void UHA_HealthComponent::SetBotAffected(bool bIsAffected)
+{
+	bBotActive = bIsAffected;
 }

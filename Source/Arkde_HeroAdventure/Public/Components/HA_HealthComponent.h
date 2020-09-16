@@ -24,6 +24,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Health Component")
 		bool bIsDead;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Health Component")
+		bool bBotActive;
+
 	UPROPERTY(BlueprintReadOnly, Category = "Health Component")
 		float CurrentHealth;
 
@@ -48,4 +51,6 @@ public:
 	bool IsDead() const { return bIsDead; };
 
 	float GetCurrentHealth() { return CurrentHealth; };
+
+	void SetBotAffected(bool bIsAffected);
 };

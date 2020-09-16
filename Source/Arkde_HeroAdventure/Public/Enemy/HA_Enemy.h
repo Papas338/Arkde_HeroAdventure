@@ -9,6 +9,7 @@
 class AHA_PathActor;
 class UCameraComponent;
 
+
 /**
  * 
  */
@@ -22,6 +23,11 @@ protected:
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|Navigation Path")
 		AHA_PathActor* MyPath;
+protected:
+	virtual void BeginPlay() override;
+
+	UFUNCTION()
+		void HealthChanged(UHA_HealthComponent* CurrentHealthComponent, AActor * DamagedActor, float Damage, const UDamageType * DamageType, AController * InstigatedBy, AActor * DamageCauser);
 
 public:
 	AHA_Enemy();
