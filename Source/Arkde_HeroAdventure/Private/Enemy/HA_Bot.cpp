@@ -10,6 +10,7 @@
 #include "NavigationSystem/Public/NavigationSystem.h"
 #include "NavigationSystem/Public/NavigationPath.h"
 #include "DrawDebugHelpers.h"
+#include "HA_Character.h"
 
 // Sets default values
 AHA_Bot::AHA_Bot()
@@ -47,6 +48,7 @@ void AHA_Bot::BeginPlay()
 void AHA_Bot::FindEnemies()
 {
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), EnemyClass, EnemyArray);
+
 		
 }
 
@@ -54,7 +56,8 @@ FVector AHA_Bot::GetNextPoint()
 {
  	UNavigationPath* NavPath = UNavigationSystemV1::FindPathToLocationSynchronously(GetWorld(), GetActorLocation(), LowestHealthEnemyPosition());
  	if (NavPath->PathPoints.Num() > 1)
- 	{
+	{
+		bIsHealing = true;
  		return NavPath->PathPoints[1];
  	}
 	return GetActorLocation();
@@ -62,14 +65,13 @@ FVector AHA_Bot::GetNextPoint()
 
 void AHA_Bot::HealAlly(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {
-	EnemyHealed = Cast<AHA_Enemy>(OtherActor);
-	if (IsValid(EnemyHealed))
+	EnemyHealed = Cast<AHA_Character>(OtherActor);
+	if (IsValid(EnemyHealed) && EnemyHealed->GetCharacterType() != EHA_CharacterType::CharacterType_Player)
 	{
 		if ((EnemyHealed->HealthComponent->GetCurrentHealth() <= 100) && (EnemyHealed->GetCharacterType() == EHA_CharacterType::CharacterType_Enemy))
 		{
 			GetWorld()->GetTimerManager().SetTimer(TimerHandle_Healing, this, &AHA_Bot::HealingStarted, 1, true);
 			UE_LOG(LogTemp, Log, TEXT("Sanacion"))
-				bIsHealing = true;
 		}
 		else
 		{
@@ -126,31 +128,35 @@ void AHA_Bot::Tick(float DeltaTime)
 
 FVector AHA_Bot::LowestHealthEnemyPosition()
 {
-	for (int i = 0; i < EnemyArray.Num(); i++)
- 	{
-		AHA_Enemy* Enemy = Cast<AHA_Enemy>(EnemyArray[i]);
-		
-		if (IsValid(Enemy) && IsValid(LowestHealthEnemy))
+	if (EnemyArray.Num() != 0)
+	{
+		for (int i = 0; i < EnemyArray.Num(); i++)
 		{
-			float Enemy1Health = Enemy->HealthComponent->GetCurrentHealth();
-			float LowestHealth = LowestHealthEnemy->HealthComponent->GetCurrentHealth();
-			if (Enemy1Health < LowestHealth)
+			AHA_Enemy* Enemy = Cast<AHA_Enemy>(EnemyArray[i]);
+
+			if (IsValid(Enemy) && IsValid(LowestHealthEnemy))
 			{
-				LowestHealthEnemy = Enemy;
+				float Enemy1Health = Enemy->HealthComponent->GetCurrentHealth();
+				float LowestHealth = LowestHealthEnemy->HealthComponent->GetCurrentHealth();
+				if (Enemy1Health < LowestHealth)
+				{
+					LowestHealthEnemy = Enemy;
+				}
 			}
 		}
-	}
-	if (IsValid(LowestHealthEnemy))
-	{
-		if (LowestHealthEnemy->HealthComponent->GetCurrentHealth() != 100 && LowestHealthEnemy->HealthComponent->GetCurrentHealth() != 0)
+		if (IsValid(LowestHealthEnemy))
 		{
-			return LowestHealthEnemy->GetActorLocation();
+			if (LowestHealthEnemy->HealthComponent->GetCurrentHealth() != 100 && LowestHealthEnemy->HealthComponent->GetCurrentHealth() != 0)
+			{
+				return LowestHealthEnemy->GetActorLocation();
+			}
+		}
+		else
+		{
+			LowestHealthEnemy = Cast<AHA_Enemy>(EnemyArray[0]);
 		}
 	}
-	else
-	{
-		LowestHealthEnemy = Cast<AHA_Enemy>(EnemyArray[0]);
-	}
+	
 	return GetActorLocation();
 }
 

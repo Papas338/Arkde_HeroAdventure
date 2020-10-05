@@ -7,6 +7,7 @@
 #include "HA_Bot.generated.h"
 
 class AHA_Enemy;
+class AHA_Character;
 class UStaticMeshComponent;
 class USphereComponent;
 class UHA_HealthComponent;
@@ -70,7 +71,7 @@ protected:
 		AHA_Enemy* LowestHealthEnemy;
 
 	UPROPERTY(BlueprintReadOnly)
-	AHA_Enemy* EnemyHealed;
+	AHA_Character* EnemyHealed;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 		EHA_BotType BotType;
