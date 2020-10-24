@@ -54,6 +54,7 @@ void AHA_GameMode::Victory(AHA_Character* Character)
 
 void AHA_GameMode::GameOver(AHA_Character* Character)
 {
+	UE_LOG(LogTemp, Log, TEXT("Funciona"))
 	Character->GetMovementComponent()->StopMovementImmediately();
 	Character->GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 

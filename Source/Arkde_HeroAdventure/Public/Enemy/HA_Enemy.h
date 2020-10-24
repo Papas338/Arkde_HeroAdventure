@@ -8,7 +8,8 @@
 
 class AHA_PathActor;
 class UCameraComponent;
-
+class UBlackboardComponent;
+class AHS_AIController;
 
 /**
  * 
@@ -19,6 +20,9 @@ class ARKDE_HEROADVENTURE_API AHA_Enemy : public AHA_Character
 	GENERATED_BODY()
 
 protected:
+
+	UPROPERTY(BlueprintReadOnly, Category = "AI")
+	AHS_AIController* MyController;
 	
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|Navigation Path")

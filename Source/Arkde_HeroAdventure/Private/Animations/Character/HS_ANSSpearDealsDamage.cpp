@@ -19,10 +19,12 @@ void UHS_ANSSpearDealsDamage::NotifyBegin(USkeletalMeshComponent * MeshComp, UAn
 			case 0:
 				UE_LOG(LogTemp, Warning, TEXT("Right hand enabled"));
 				PlayerCharacter->RightHandSpearComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+				PlayerCharacter->RightHandSpearComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 				break;
 			case 1:
 				UE_LOG(LogTemp, Warning, TEXT("Left hand enabled"));
 				PlayerCharacter->LeftHandSpearComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+				PlayerCharacter->LeftHandSpearComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 				break;
 			default:
 				break;

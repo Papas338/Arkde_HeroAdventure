@@ -5,7 +5,6 @@
 #include "AIModule/Classes/BehaviorTree/BehaviorTree.h"
 #include "AIModule/Classes/BehaviorTree/BlackboardComponent.h"
 #include "AIModule/Classes/Blueprint/AIBlueprintHelperLibrary.h"
-#include "AIModule/Classes/Perception/AIPerceptionComponent.h"
 #include "Enemy/HA_Enemy.h"
 #include "Components/HA_HealthComponent.h"
 
@@ -16,14 +15,11 @@ AHS_AIController::AHS_AIController()
 	SeeingPlayerKeyName = "bIsSeeingPlayer";
 	IsPlayerAliveKeyName = "bIsPlayerAlive";
 	//Components creation
-	AIPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("Perception Component"));
 }
 
 void AHS_AIController::BeginPlay()
 {
 	Super::BeginPlay();
-
-	AIPerceptionComponent->OnPerceptionUpdated.AddDynamic(this, &AHS_AIController::UpdateSenses);
 
 	if (IsValid(EnemyBehaviorTree))
 	{
@@ -41,6 +37,7 @@ void AHS_AIController::BeginPlay()
 	}
 }
 
+/*
 void AHS_AIController::UpdateSenses(const TArray<AActor*>& UpdatedActors)
 {
 	for (AActor* ActorSelected : UpdatedActors)
@@ -75,3 +72,4 @@ void AHS_AIController::UpdateSenses(const TArray<AActor*>& UpdatedActors)
 	}
 }
 
+*/

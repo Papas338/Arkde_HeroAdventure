@@ -23,9 +23,6 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Components")
 		UBlackboardComponent* MyBlackboard;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-		UAIPerceptionComponent* AIPerceptionComponent; //Perception Component
-
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AI")
 		bool bPlayerStatus;
@@ -50,8 +47,8 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	UFUNCTION()
-		void UpdateSenses(const TArray<AActor*>& UpdatedActors);
+	/*UFUNCTION()
+		void UpdateSenses(const TArray<AActor*>& UpdatedActors);*/
 
 public:
 };
