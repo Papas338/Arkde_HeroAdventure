@@ -37,6 +37,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
 		TSubclassOf<UDamageType> TrapDamageType;
 
+	UPROPERTY(BlueprintReadOnly, Category = "Trap")
+		bool bExploded;
+
 public:
 	// Sets default values for this actor's properties
 	AHA_Trap();

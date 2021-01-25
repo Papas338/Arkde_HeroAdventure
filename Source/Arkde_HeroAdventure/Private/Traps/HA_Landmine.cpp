@@ -32,16 +32,20 @@ void AHA_Landmine::BeginPlay()
 
 void AHA_Landmine::OnHitReceived(UHA_HealthComponent * ThisHealthComponent, AActor * DamagedActor, float Damage, const UDamageType * DamageType, AController * InstigatedBy, AActor * DamageCauser)
 {
-	TArray<AActor*> IgnoredActors;
-	UGameplayStatics::ApplyRadialDamage(GetWorld(), TrapDamage, GetActorLocation(), DamageRadius, TrapDamageType, IgnoredActors, this, thisController, true);
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), TrapEffect, GetActorLocation());
-
 	if (HealthComponent->IsDead())
 	{
-		if (IsValid(GameModeReference))
+		if (!bExploded)
 		{
-			GameModeReference->DestroySceneObject(this, 0.1f);
-		}
+			bExploded = true;
+			TArray<AActor*> IgnoredActors;
+			UGameplayStatics::ApplyRadialDamage(GetWorld(), TrapDamage, GetActorLocation(), DamageRadius, TrapDamageType, IgnoredActors, this, thisController, true);
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), TrapEffect, GetActorLocation());
+
+			if (IsValid(GameModeReference))
+			{
+				GameModeReference->DestroySceneObject(this, 0.1f);
+			}
+		}		
 	}
 }
 

@@ -26,9 +26,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Trap")
 		float DamageRadius;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Trap")
-		bool bExploded;
-
 public:
 	// Sets default values for this actor's properties
 	AHA_ExplosiveBarrel();
