@@ -2,6 +2,7 @@
 
 
 #include "Weapons/HA_Sniper.h"
+#include "HA_Character.h"
 #include "Arkde_HeroAdventure/Arkde_HeroAdventure.h"
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystem.h"
@@ -38,7 +39,11 @@ void AHA_Sniper::GenerateShot(FVector Offset)
 	FVector EyesLocation;
 	FRotator EyesRotation;
 	CurrentWeaponOwner->GetActorEyesViewPoint(EyesLocation, EyesRotation);
-	EyesRotation = CurrentWeaponOwner->GetMesh()->GetSocketRotation("SCK_Muzzle") + FRotator(0,0,0);
+	AHA_Character* ShootingGuy = Cast<AHA_Character>(CurrentWeaponOwner);
+	if (ShootingGuy->GetCharacterType() == EHA_CharacterType::CharacterType_Enemy)
+	{
+		EyesRotation = CurrentWeaponOwner->GetMesh()->GetSocketRotation("SCK_Muzzle");
+	}
 
 
 	FVector ShotOrigen;

@@ -35,6 +35,8 @@ void AHA_Cannon::BeginPlay()
 	
 	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	PlayerReference = Cast<AHA_Character>(PlayerPawn);
+
+	bIsBotAlived = false;
 }
 
 // Called every frame
@@ -49,27 +51,29 @@ void AHA_Cannon::Tick(float DeltaTime)
 
 void AHA_Cannon::ShootBot()
 {
-	FVector ShotOrigin = ShotLocation->GetComponentLocation();
-	FTransform BotTransform = FTransform(FRotator::ZeroRotator, ShotOrigin);
-	AHA_Bot* NewBot = GetWorld()->SpawnActorDeferred<AHA_Bot>(BotToShoot, BotTransform);
-	if (IsValid(NewBot))
+	if (bIsBotAlived == false)
 	{
-		AHA_ExplosiveBot* ExplosiveBot = Cast<AHA_ExplosiveBot>(NewBot);
-		if (IsValid(ExplosiveBot))
+		FVector ShotOrigin = ShotLocation->GetComponentLocation();
+		FTransform BotTransform = FTransform(FRotator::ZeroRotator, ShotOrigin);
+		AHA_Bot* NewBot = GetWorld()->SpawnActorDeferred<AHA_Bot>(BotToShoot, BotTransform);
+		if (IsValid(NewBot))
 		{
-			ExplosiveBot->SetMyCannon(this);
+			AHA_ExplosiveBot* ExplosiveBot = Cast<AHA_ExplosiveBot>(NewBot);
+			if (IsValid(ExplosiveBot))
+			{
+				SetIsBotAlived(true);
+				ExplosiveBot->SetMyCannon(this);
+			}
 		}
-	}
-	NewBot->FinishSpawning(BotTransform);
-
-	
+		NewBot->FinishSpawning(BotTransform);
+	}	
 }
 
 void AHA_Cannon::RotateCannon()
 {
 	PlayerPosition = GetActorLocation() - PlayerReference->GetActorLocation();
 	PointingDirection = UKismetMathLibrary::MakeRotFromX(PlayerPosition);
-	PointingDirection.Pitch += 45;
+	PointingDirection.Pitch += CannonAngle;
 	SetActorRotation(PointingDirection);
 }
 

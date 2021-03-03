@@ -19,7 +19,7 @@ class ARKDE_HEROADVENTURE_API AHA_Cannon : public AActor
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	UStaticMeshComponent* CannonMeshComponent;
+		UStaticMeshComponent* CannonMeshComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 		UCapsuleComponent* HitBoxComponent;
@@ -35,12 +35,18 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Rotation")
 		FRotator PointingDirection;
 
+	UPROPERTY(BlueprintReadWrite, Category = "Cannon")
+		bool bIsBotAlived;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Cannon")
 		TSubclassOf<AHA_Bot> BotToShoot;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Cannon")
+		float CannonAngle;
+
 	AHA_Character* PlayerReference;
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AHA_Cannon();
 
@@ -48,11 +54,13 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	void ShootBot();
+
+	void SetIsBotAlived(bool NewValue) { bIsBotAlived = NewValue; };
 
 protected:
 	void RotateCannon();

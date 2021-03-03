@@ -2,4 +2,65 @@
 
 
 #include "Core/HA_GameInstance.h"
+#include "Kismet/GameplayStatics.h"
+#include "SaveSystem/HS_SaveGame.h"
 
+UHA_GameInstance::UHA_GameInstance()
+{
+	SaveSlotName = "HS_SaveData";
+}
+
+void UHA_GameInstance::SaveData()
+{
+	USaveGame* SaveGameObject = nullptr;
+	bool bExistingData = UGameplayStatics::DoesSaveGameExist(SaveSlotName, 0);
+	if (bExistingData)
+	{
+		SaveGameObject = UGameplayStatics::LoadGameFromSlot(SaveSlotName, 0);
+	}
+	else
+	{
+		SaveGameObject = UGameplayStatics::CreateSaveGameObject(UHS_SaveGame::StaticClass());
+	}
+	if (IsValid(SaveGameObject))
+	{
+		UHS_SaveGame* SaveFile = Cast<UHS_SaveGame>(SaveGameObject);
+		if (IsValid(SaveFile))
+		{
+			SaveFile->SetAreCannonsActive(bAreCannonsActive);
+			SaveFile->SetPlayerPosition(PlayerPosition);
+
+			UGameplayStatics::SaveGameToSlot(SaveFile,SaveSlotName, 0);
+		}
+	}
+}
+
+void UHA_GameInstance::LoadData()
+{
+	USaveGame* SaveGameObject = nullptr;
+	bool bExistingData = UGameplayStatics::DoesSaveGameExist(SaveSlotName, 0);
+	if (bExistingData)
+	{
+		SaveGameObject = UGameplayStatics::LoadGameFromSlot(SaveSlotName, 0);
+	}
+	else
+	{
+		SaveGameObject = UGameplayStatics::CreateSaveGameObject(UHS_SaveGame::StaticClass());
+	}
+	if (IsValid(SaveGameObject))
+	{
+		UHS_SaveGame* SaveFile = Cast<UHS_SaveGame>(SaveGameObject);
+		if (IsValid(SaveFile))
+		{
+			PlayerPosition = SaveFile->GetPlayerPosition();
+			bAreCannonsActive = SaveFile->GetAreCannonsActive();
+		}
+	}
+}
+
+void UHA_GameInstance::ResetData()
+{
+	PlayerPosition = FVector(-32.0f, 129.0f, 90.0f);
+	bAreCannonsActive = false;
+	BP_ResetData();
+}

@@ -14,6 +14,7 @@
 #include "Weapons/HA_Spear.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/HA_UltimateAbilityComponent.h"
+#include "Core/HA_GameInstance.h"
 
 // Sets default values
 AHA_Character::AHA_Character()
@@ -34,6 +35,8 @@ AHA_Character::AHA_Character()
 	UltimateDurationFrecuency = 0.5f;
 	NormalSpeed = GetCharacterMovement()->MaxWalkSpeed;
 	PlayerVelocity = GetCharacterMovement()->Velocity;
+
+	MainMenuMapName = "MainMenu";
 
 	//Components initialization
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring_Arm_Component"));
@@ -66,6 +69,7 @@ void AHA_Character::BeginPlay()
 	Super::BeginPlay();
 	InitializeVariables();
 	InitializeReferences();
+	SetInitialPosition();
 
 	SetInitialWeapon();
 	SetSecondaryWeapon();
@@ -82,6 +86,11 @@ void AHA_Character::Tick(float DeltaTime)
 	if (!bIsUsingUltimate)
 	{
 		UpdateUltimateCharge(DeltaTime);
+	}
+
+	if (GetCharacterType() == EHA_CharacterType::CharacterType_Player)
+	{
+		GameInstanceReference->SetPlayerPosition(GetActorLocation());
 	}
 }
 
@@ -105,6 +114,16 @@ void AHA_Character::InitializeReferences()
 	MyAnimInstance = GetMesh()->GetAnimInstance();
 
 	GameModeReference = Cast<AHA_GameMode>(GetWorld()->GetAuthGameMode());
+
+	GameInstanceReference = Cast<UHA_GameInstance>(GetWorld()->GetGameInstance());
+}
+
+void AHA_Character::SetInitialPosition()
+{
+	if (GetCharacterType() == EHA_CharacterType::CharacterType_Player)
+	{
+		SetActorLocation(GameInstanceReference->GetPlayerPosition());
+	}
 }
 
 /*
@@ -148,6 +167,8 @@ void AHA_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	//Ultimate
 	PlayerInputComponent->BindAction("Ultimate", IE_Pressed, this, &AHA_Character::StartUltimate);
 	PlayerInputComponent->BindAction("Ultimate", IE_Released, this, &AHA_Character::StopUltimate);
+
+	PlayerInputComponent->BindAction("Exit", IE_Pressed, this, &AHA_Character::ExitToMainMenu);
 }
 
 void AHA_Character::AddControllerPitchInput(float value) {
@@ -449,6 +470,16 @@ void AHA_Character::ResetCombo()
 {
 	ComboMultiplier = 1.0f;
 	SetComboAvailable(false);
+}
+
+void AHA_Character::ExitToMainMenu()
+{
+	if (IsValid(GameInstanceReference))
+	{
+		GameInstanceReference->SaveData();
+	}
+
+	UGameplayStatics::OpenLevel(GetWorld(), MainMenuMapName);
 }
 
 void AHA_Character::OnHealthChange(UHA_HealthComponent* ThisHealthComponent, AActor * DamagedActor, float Damage, const UDamageType * DamageType, AController * InstigatedBy, AActor * DamageCauser)

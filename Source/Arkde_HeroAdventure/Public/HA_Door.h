@@ -53,12 +53,14 @@ protected:
 	//Checks if the player can open the door
 	UFUNCTION()
 		void CheckKeyFromPlayer(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
-
-	//Opens the door
-	void OpenDoor();
+	
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "My Door")
+		void BP_OpenDoor();
 
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	//Opens the door
+	void OpenDoor();
 };

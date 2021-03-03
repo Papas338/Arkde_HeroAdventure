@@ -70,7 +70,6 @@ void AHA_Door::NotifyActorBeginOverlap(AActor * OtherActor)
 	if (!bIsOpen)
 	{
 		OpenDoor();
-		bIsOpen = true;
 	}
 	
 }
@@ -78,6 +77,7 @@ void AHA_Door::NotifyActorBeginOverlap(AActor * OtherActor)
 //Opens the door
 void AHA_Door::OpenDoor()
 {
-	DoorComponent->AddRelativeRotation(FRotator(0, angle, 0));
+	bIsOpen = true;
+	BP_OpenDoor();
 }
 

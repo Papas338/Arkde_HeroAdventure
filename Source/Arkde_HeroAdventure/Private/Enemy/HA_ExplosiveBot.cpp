@@ -128,6 +128,10 @@ void AHA_ExplosiveBot::DamageTaken(UHA_HealthComponent * ThisHealthComponent, AA
 
 	if (HealthComponent->IsDead())
 	{
+		if (IsValid(MyCannon))
+		{
+			MyCannon->SetIsBotAlived(false);
+		}
 
 		AHA_Weapon* Weapon = Cast<AHA_Weapon>(DamageCauser);
 		if (IsValid(Weapon))

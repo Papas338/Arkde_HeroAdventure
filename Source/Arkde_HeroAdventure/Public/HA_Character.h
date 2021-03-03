@@ -15,6 +15,7 @@ class UCapsuleComponent;
 class UHA_HealthComponent;
 class AHA_GameMode;
 class UHA_UltimateAbilityComponent;
+class UHA_GameInstance;
 
 UENUM(Blueprintable)
 enum class EHA_CharacterType : uint8
@@ -142,6 +143,9 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Weapon")
 		FName LeftHandSocket;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Levels")
+		FName MainMenuMapName;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
 		AHA_Weapon* CurrentWeapon;
 
@@ -206,6 +210,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
 		TSubclassOf<AHA_Weapon> UltimateWeaponClass;
+
+	UHA_GameInstance* GameInstanceReference;
 	
 protected:
 	// Called when the game starts or when spawned
@@ -214,6 +220,7 @@ protected:
 	//Initialize
 	void InitializeVariables();
 	void InitializeReferences();
+	void SetInitialPosition();
 
 	//Jump
 	virtual void Jump() override;
@@ -261,6 +268,8 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void BP_UpdateUltimateDuration();
 	
+	void ExitToMainMenu();
+
 	//Stats
 	UFUNCTION()
 	void OnHealthChange(UHA_HealthComponent* ThisHealthComponent, AActor * DamagedActor, float Damage, const UDamageType * DamageType, AController * InstigatedBy, AActor * DamageCauser);

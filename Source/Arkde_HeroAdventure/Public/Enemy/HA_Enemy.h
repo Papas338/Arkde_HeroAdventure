@@ -9,7 +9,7 @@
 class AHA_PathActor;
 class UCameraComponent;
 class UBlackboardComponent;
-class AHS_AIController;
+class AHS_AIControllerNew;
 
 /**
  * 
@@ -22,11 +22,15 @@ class ARKDE_HEROADVENTURE_API AHA_Enemy : public AHA_Character
 protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "AI")
-	AHS_AIController* MyController;
+		AHS_AIControllerNew* MyController;
 	
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|Navigation Path")
 		AHA_PathActor* MyPath;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI|Navigation Path")
+		float waitingTimeOnPathPoint;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -35,5 +39,7 @@ protected:
 
 public:
 	AHA_Enemy();
+
+	float GetWaitingTime() { return waitingTimeOnPathPoint; };
 
 };

@@ -84,14 +84,18 @@ void AHA_HealingBot::HealAlly(UPrimitiveComponent* OverlappedComponent, AActor* 
 
 void AHA_HealingBot::HealingStarted()
 {
-	if (EnemyHealed->HealthComponent->GetCurrentHealth() >= 100)
+	if (IsValid(EnemyHealed))
 	{
-		bIsHealing = false;
-		return;
+		if (EnemyHealed->HealthComponent->GetCurrentHealth() >= 100)
+		{
+			bIsHealing = false;
+			return;
+		}
+		TArray<AActor*> IgnoredActors;
+		UGameplayStatics::ApplyRadialDamage(GetWorld(), -HealingAmount, GetActorLocation(), 100, BotDamageType, IgnoredActors, this, GetInstigatorController(), true);
+		UE_LOG(LogTemp, Log, TEXT("Healing"))
 	}
-	TArray<AActor*> IgnoredActors;
-	UGameplayStatics::ApplyRadialDamage(GetWorld(), -HealingAmount, GetActorLocation(), 100, BotDamageType, IgnoredActors, this, GetInstigatorController(), true);
-	UE_LOG(LogTemp, Log, TEXT("Healing"))
+	
 }
 
 void AHA_HealingBot::ActivateResistance()

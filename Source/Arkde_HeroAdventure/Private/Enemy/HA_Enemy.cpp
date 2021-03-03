@@ -2,20 +2,22 @@
 
 
 #include "Enemy/HA_Enemy.h"
-#include "Enemy/Controller/HS_AIController.h"
+#include "AIModule/Classes/Perception/AISense_Damage.h"
+#include "Enemy/Controller/HS_AIControllerNew.h"
 #include "Camera/CameraComponent.h"
 #include "Components/HA_HealthComponent.h"
+#include "Weapons/HA_Weapon.h"
 
 AHA_Enemy::AHA_Enemy()
 {
-	MyController = Cast<AHS_AIController>(GetController());
 }
 
 void AHA_Enemy::BeginPlay()
 {
 	Super::BeginPlay();
 
-		HealthComponent->OnHealthChangeDelegate.AddDynamic(this, &AHA_Enemy::HealthChanged);
+	HealthComponent->OnHealthChangeDelegate.AddDynamic(this, &AHA_Enemy::HealthChanged);
+	MyController = Cast<AHS_AIControllerNew>(GetController());
 	
 }
 
@@ -29,5 +31,15 @@ void AHA_Enemy::HealthChanged(UHA_HealthComponent* CurrentHealthComponent, AActo
 	if (HealthComponent->IsDead())
 	{
 		MyController->UnPossess();
+	}
+	else
+	{
+		AHA_Weapon* PlayerWeapon = Cast<AHA_Weapon>(DamageCauser);
+		if (IsValid(PlayerWeapon))
+		{
+			MyController->SetReceivingDamage(true);
+			AActor* RifleOwner = PlayerWeapon->GetOwner();
+			UAISense_Damage::ReportDamageEvent(GetWorld(), this, RifleOwner, Damage, RifleOwner->GetActorLocation(), FVector::ZeroVector);
+		}
 	}
 }
