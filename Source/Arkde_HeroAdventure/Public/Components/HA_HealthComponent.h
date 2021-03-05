@@ -7,6 +7,7 @@
 #include "HA_HealthComponent.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_SixParams(FOnHealthChangeSignature, UHA_HealthComponent*, HealthComponent, AActor *, DamagedActor, float, Damage, const UDamageType *, DamageType, AController *, InstigatedBy, AActor *, DamageCauser);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnHealthUpdateSignature, float, CurrentHealth, float, MaxHealth);
 
 UCLASS( ClassGroup=(PEACE), meta=(BlueprintSpawnableComponent) )
 class ARKDE_HEROADVENTURE_API UHA_HealthComponent : public UActorComponent
@@ -38,14 +39,21 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Health Component")
 	AActor* MyOwner;
+	
+	FTimerHandle TimerHandle_UpdateInitialHealth;
 
 public:
 	UPROPERTY(BlueprintAssignable)
 		FOnHealthChangeSignature OnHealthChangeDelegate;
 
+	UPROPERTY(BlueprintAssignable)
+		FOnHealthUpdateSignature OnHealthUpdateDelegate;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	void UpdateInitialHealth();
 
 public:
 	UFUNCTION()

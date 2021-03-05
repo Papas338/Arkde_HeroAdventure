@@ -17,6 +17,9 @@ class AHA_GameMode;
 class UHA_UltimateAbilityComponent;
 class UHA_GameInstance;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnUltimateUpdateSignature, float, CurrentUltimateCharge, float, MaxUltimateCharge);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnUltimateReadySignature, bool, bIsUltReady);
+
 UENUM(Blueprintable)
 enum class EHA_CharacterType : uint8
 {
@@ -120,7 +123,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Ultimate")
 		bool bIsUsingUltimate;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Ultimate|Timer")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ultimate|Timer")
 		float UltimateDurationFrecuency;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Ultimate")
@@ -179,6 +182,16 @@ protected:
 		bool bHasToDestroy;
 
 public:
+
+	UPROPERTY(BlueprintAssignable)
+	FOnUltimateUpdateSignature OnUltimateUpdateDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnUltimateReadySignature OnUltimateReadyDelegate;
+
+public:
+
+	UHA_HealthComponent* GetHealthComponent() { return HealthComponent; };
 
 	//Player Basic Movement
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")

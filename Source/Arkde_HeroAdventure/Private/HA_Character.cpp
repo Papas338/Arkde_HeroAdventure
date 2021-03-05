@@ -105,6 +105,7 @@ void AHA_Character::InitializeVariables()
 	bIsEvadeAvailable = true;
 	walkSpeed = 1.0f;
 
+	bIsUsingUltimate = false;
 	CurrentUltimateCharge = 0.0f;
 	CurrentUltimateDuration = MaxUltimateDuration;
 }
@@ -498,9 +499,11 @@ void AHA_Character::UpdateUltimateCharge(float Value)
 	if (!bIsUsingUltimate)
 	{
 		CurrentUltimateCharge = FMath::Clamp(CurrentUltimateCharge + Value, 0.0f, MaxUltimateCharge);
+		OnUltimateUpdateDelegate.Broadcast(CurrentUltimateCharge, MaxUltimateCharge);
 		if (CurrentUltimateCharge == MaxUltimateCharge)
 		{
 			bCanUseUltimate = true;
+			OnUltimateReadyDelegate.Broadcast(true);
 		}
 	}
 }
@@ -511,6 +514,7 @@ void AHA_Character::StartUltimate()
 	{
 		bIsUsingUltimate = true;
 		CurrentUltimateCharge = 0.0f;
+		bCanUseUltimate = false;
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle_Ultimate, this, &AHA_Character::UpdateUltimateDuration, UltimateDurationFrecuency, true);
 		UE_LOG(LogTemp, Warning, TEXT("Ultimated started"))
 		UltimateBehaviour();
@@ -525,9 +529,11 @@ void AHA_Character::StopUltimate()
 void AHA_Character::UpdateUltimateDuration()
 {
 	CurrentUltimateDuration = FMath::Clamp(CurrentUltimateDuration - UltimateDurationFrecuency, 0.0f, MaxUltimateDuration);
+	OnUltimateUpdateDelegate.Broadcast(CurrentUltimateDuration, MaxUltimateDuration);
 	if (CurrentUltimateDuration == 0)
 	{
 		bIsUsingUltimate = false;
+		OnUltimateReadyDelegate.Broadcast(false);
 		GetWorld()->GetTimerManager().ClearTimer(TimerHandle_Ultimate);
 		CurrentUltimateDuration = MaxUltimateDuration;
 		RestorePlayer();

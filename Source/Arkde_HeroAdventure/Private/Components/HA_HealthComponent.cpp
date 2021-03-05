@@ -19,6 +19,13 @@ void UHA_HealthComponent::BeginPlay()
 	{
 		MyOwner->OnTakeAnyDamage.AddDynamic(this, &UHA_HealthComponent::DamageTaken);
 	}
+
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle_UpdateInitialHealth, this, &UHA_HealthComponent::UpdateInitialHealth, 0.2f, false);
+}
+
+void UHA_HealthComponent::UpdateInitialHealth()
+{
+	OnHealthUpdateDelegate.Broadcast(CurrentHealth, MaxHealth);
 }
 
 void UHA_HealthComponent::DamageTaken(AActor * DamagedActor, float Damage, const UDamageType * DamageType, AController * InstigatedBy, AActor * DamageCauser)
@@ -36,6 +43,7 @@ void UHA_HealthComponent::DamageTaken(AActor * DamagedActor, float Damage, const
 	}
 
 	OnHealthChangeDelegate.Broadcast(this, DamagedActor, Damage, DamageType, InstigatedBy, DamageCauser);
+	OnHealthUpdateDelegate.Broadcast(CurrentHealth, MaxHealth);
 
 	if (bDebug)
 	{
