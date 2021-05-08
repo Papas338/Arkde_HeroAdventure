@@ -4,7 +4,6 @@
 #include "Animations/Character/HS_ANSpearAttackDone.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "HA_Character.h"
-#include "Weapons/HA_Spear.h"
 
 void UHS_ANSpearAttackDone::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
 {

@@ -34,6 +34,8 @@ AHA_Door::AHA_Door()
 void AHA_Door::BeginPlay()
 {
 	Super::BeginPlay();
+
+	OpenZoneComponent->OnComponentBeginOverlap.AddDynamic(this, &AHA_Door::CheckKeyFromPlayer);
 }
 
 // Called every frame
@@ -63,7 +65,7 @@ void AHA_Door::CheckKeyFromPlayer(UPrimitiveComponent * OverlappedComponent, AAc
 }
 
 //Checks if the player it's close enough to open the door
-void AHA_Door::NotifyActorBeginOverlap(AActor * OtherActor)
+/*void AHA_Door::NotifyActorBeginOverlap(AActor * OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, TEXT("Yep, definitely a door"));
@@ -72,7 +74,7 @@ void AHA_Door::NotifyActorBeginOverlap(AActor * OtherActor)
 		OpenDoor();
 	}
 	
-}
+}*/
 
 //Opens the door
 void AHA_Door::OpenDoor()

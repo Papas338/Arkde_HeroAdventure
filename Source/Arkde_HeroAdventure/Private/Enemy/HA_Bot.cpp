@@ -12,6 +12,9 @@
 #include "DrawDebugHelpers.h"
 #include "HA_Character.h"
 #include "Materials/MaterialInstanceDynamic.h"
+#include "Components/AudioComponent.h"
+#include "Sound/Soundcue.h"
+
 
 // Sets default values
 AHA_Bot::AHA_Bot()
@@ -29,6 +32,9 @@ AHA_Bot::AHA_Bot()
 	HitBoxComponent->SetupAttachment(RootComponent);
 
 	HealthComponent = CreateDefaultSubobject<UHA_HealthComponent>(TEXT("HealthComponent"));
+
+	TickSoundComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("TickSoundComponent"));
+	TickSoundComponent->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -37,6 +43,20 @@ void AHA_Bot::BeginPlay()
 	Super::BeginPlay();
 
 	BotMaterial = MeshComponent->CreateAndSetMaterialInstanceDynamicFromMaterial(0, MeshComponent->GetMaterial(0));
+}
+
+void AHA_Bot::PlayTimerSound()
+{
+	TickSoundComponent->Play();
+}
+
+void AHA_Bot::PlayExplosionSound()
+{
+	if (!IsValid(ExplosionSound))
+	{
+		return;
+	}
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), ExplosionSound, GetActorLocation());
 }
 
 

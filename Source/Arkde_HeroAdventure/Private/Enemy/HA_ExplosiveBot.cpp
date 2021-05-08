@@ -45,6 +45,7 @@ void AHA_ExplosiveBot::BeginPlay()
 
 void AHA_ExplosiveBot::SelfDamage()
 {
+	PlayTimerSound();
 	UGameplayStatics::ApplyDamage(this, 20.0f, GetInstigatorController(), nullptr, nullptr);
 }
 
@@ -65,6 +66,8 @@ void AHA_ExplosiveBot::SelfDestruct()
 	IgnoredActors.Add(this);
 
 	UGameplayStatics::ApplyRadialDamage(GetWorld(), ExplosionDamage, GetActorLocation(), ExplosionRadius, nullptr, IgnoredActors, this, GetInstigatorController(), true);
+
+	PlayExplosionSound();
 
 	Destroy();
 }

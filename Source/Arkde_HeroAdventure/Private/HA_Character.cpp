@@ -9,12 +9,14 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/HA_HealthComponent.h"
+#include "Components/AudioComponent.h"
 #include "Core/HA_GameMode.h"
 #include "Weapons/HA_Weapon.h"
 #include "Weapons/HA_Spear.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/HA_UltimateAbilityComponent.h"
 #include "Core/HA_GameInstance.h"
+#include "Sound/SoundCue.h"
 
 // Sets default values
 AHA_Character::AHA_Character()
@@ -61,6 +63,11 @@ AHA_Character::AHA_Character()
 	HealthComponent = CreateDefaultSubobject<UHA_HealthComponent>(TEXT("HealthComponent"));
 
 	//UltimateAbilityComponent = CreateDefaultSubobject<UHA_UltimateAbilityComponent>(TEXT("UltimateAbilityComponent"));
+
+	StepAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("StepAudioComponent"));
+	StepAudioComponent->SetupAttachment(RootComponent);
+	VoiceAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("VoiceAudioComponent"));
+	VoiceAudioComponent->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -473,6 +480,21 @@ void AHA_Character::ResetCombo()
 	SetComboAvailable(false);
 }
 
+void AHA_Character::PlayStepSound()
+{
+	StepAudioComponent->Play();
+}
+
+void AHA_Character::PlayVoiceSound(USoundCue* VoiceSound)
+{
+	if (!IsValid(VoiceSound))
+	{
+		return;
+	}
+	VoiceAudioComponent->SetSound(VoiceSound);
+	VoiceAudioComponent->Play();
+}
+
 void AHA_Character::ExitToMainMenu()
 {
 	if (IsValid(GameInstanceReference))
@@ -485,11 +507,20 @@ void AHA_Character::ExitToMainMenu()
 
 void AHA_Character::OnHealthChange(UHA_HealthComponent* ThisHealthComponent, AActor * DamagedActor, float Damage, const UDamageType * DamageType, AController * InstigatedBy, AActor * DamageCauser)
 {
+	if (!HealthComponent->IsDead())
+	{
+		PlayVoiceSound(HurtSound);
+	}
 	if (HealthComponent->IsDead())
 	{
-		if (IsValid(GameModeReference))
+		PlayVoiceSound(DeathSound);
+
+		if (GetCharacterType() == EHA_CharacterType::CharacterType_Player)
 		{
-			GameModeReference->GameOver(this);
+			if (IsValid(GameModeReference))
+			{
+				GameModeReference->GameOver(this);
+			}
 		}
 	}
 }
@@ -544,6 +575,8 @@ void AHA_Character::UpdateUltimateDuration()
 
 void AHA_Character::UltimateBehaviour()
 {
+	PlayVoiceSound(UltimateSound);
+
 	GetCharacterMovement()->GravityScale = 0;
 	GetCharacterMovement()->MaxWalkSpeed = 0;
 	GetCharacterMovement()->Velocity = FVector(0,0,0);

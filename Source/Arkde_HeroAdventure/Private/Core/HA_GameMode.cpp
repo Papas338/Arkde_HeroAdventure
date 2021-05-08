@@ -8,12 +8,30 @@
 #include "HA_SpectatingCamera.h"
 #include "Kismet/GameplayStatics.h"
 #include "HA_SpectatingCamera.h"
+#include "Sound/SoundCue.h"
+#include "Enemy/HA_Enemy.h"
 
 void AHA_GameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
 	SetUpSpectatingCameras();
+
+	TArray<AActor*> EnemyActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AHA_Enemy::StaticClass(), EnemyActors);
+	for (AActor* EnemyActor : EnemyActors)
+	{
+		if (!IsValid(EnemyActor))
+		{
+			continue;
+		}
+
+		AHA_Enemy* NewEnemy = Cast<AHA_Enemy>(EnemyActor);
+		if (IsValid(NewEnemy))
+		{
+			LevelEnemies.AddUnique(NewEnemy);
+		}
+	}
 }
 
 void AHA_GameMode::SetUpSpectatingCameras()
@@ -49,6 +67,12 @@ void AHA_GameMode::Victory(AHA_Character* Character)
 	ChangeToSpectatorCamera(Character, VictoryCamera);
 	Character->DisableInput(nullptr);
 
+	OnVictoryDelegate.Broadcast();
+
+	PlayMusic(VictoryMusic);
+
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle_BackToMainMenu, this, &AHA_GameMode::BackToMainMenu, 5.0f, false);
+
 	BP_Victory(Character);
 }
 
@@ -68,7 +92,23 @@ void AHA_GameMode::GameOver(AHA_Character* Character)
 		ChangeToSpectatorCamera(Character, GameOverCamera);
 		Character->DisableInput(nullptr);
 	}
+
+	OnGameOverDelegate.Broadcast();
+
+	PlayMusic(GameOverMusic);
+
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle_BackToMainMenu, this, &AHA_GameMode::BackToMainMenu, 8.0f, false);
+
 	BP_GameOver(Character);
+}
+
+void AHA_GameMode::AddKeyToCharacter(AHA_Character* KeyOwner, FName KeyTag)
+{
+	if (IsValid(KeyOwner))
+	{
+		OnKeyAddedDelegate.Broadcast(KeyTag);
+		KeyOwner->AddKey(KeyTag);
+	}
 }
 
 void AHA_GameMode::ChangeToSpectatorCamera(AHA_Character * Character, AHA_SpectatingCamera* SpectatorCamera)
@@ -88,6 +128,52 @@ void AHA_GameMode::ChangeToSpectatorCamera(AHA_Character * Character, AHA_Specta
 	}
 }
 
+void AHA_GameMode::BackToMainMenu()
+{
+	UGameplayStatics::OpenLevel(GetWorld(), MapName);
+}
+
+void AHA_GameMode::PlayMusic(USoundCue* GameMusic)
+{
+	if (!IsValid(GameMusic))
+	{
+		return;
+	}
+
+	UGameplayStatics::PlaySound2D(GetWorld(), GameMusic);
+}
+
+AHA_GameMode::AHA_GameMode()
+{
+	MapName = "MainMenu";
+}
+
+void AHA_GameMode::CheckAlerts()
+{
+	bool bEnemyInAlertMode = false;
+
+	for (AHA_Enemy* EnemyInLevel : LevelEnemies)
+	{
+		if (!IsValid(EnemyInLevel))
+		{
+			continue;
+		}
+
+		if (EnemyInLevel->IsAlerted())
+		{
+			bEnemyInAlertMode = true;
+			break;
+		}
+	}
+
+	if (bEnemyInAlertMode != bIsAlertMode)
+	{
+		bIsAlertMode = bEnemyInAlertMode;
+
+		OnAlertModeChangeDelegate.Broadcast(bIsAlertMode);
+	}
+}
+
 void AHA_GameMode::DestroySceneObject(AActor* ThisActor, float TimeToDestroy)
 {
 	if (!IsValid(ThisActor))
@@ -99,3 +185,4 @@ void AHA_GameMode::DestroySceneObject(AActor* ThisActor, float TimeToDestroy)
 
 	BP_DestroySceneObject(ThisActor, TimeToDestroy);
 }
+

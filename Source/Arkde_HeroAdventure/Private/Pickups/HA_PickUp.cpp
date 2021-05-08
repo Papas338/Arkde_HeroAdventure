@@ -4,6 +4,7 @@
 #include "Pickups/HA_PickUp.h"
 #include "Components/SphereComponent.h"
 #include "HA_Character.h"
+#include "Core/HA_GameMode.h"
 
 // Sets default values
 AHA_PickUp::AHA_PickUp()
@@ -25,6 +26,8 @@ AHA_PickUp::AHA_PickUp()
 void AHA_PickUp::BeginPlay()
 {
 	Super::BeginPlay();
+
+	GameModeReference = Cast<AHA_GameMode>(GetWorld()->GetAuthGameMode());
 }
 
 // Called every frame

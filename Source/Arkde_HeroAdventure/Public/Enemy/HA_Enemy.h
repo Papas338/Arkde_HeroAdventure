@@ -10,6 +10,8 @@ class AHA_PathActor;
 class UCameraComponent;
 class UBlackboardComponent;
 class AHS_AIControllerNew;
+class UWidgetComponent;
+class UHS_EnemyHealthBar;
 
 /**
  * 
@@ -21,8 +23,16 @@ class ARKDE_HEROADVENTURE_API AHA_Enemy : public AHA_Character
 
 protected:
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UWidgetComponent* WidgetHealthBarComponent;
+
+protected:
+
 	UPROPERTY(BlueprintReadOnly, Category = "AI")
 		AHS_AIControllerNew* MyController;
+
+	UPROPERTY(BlueprintReadOnly, Category = "UI")
+		UHS_EnemyHealthBar* EnemyHealthBar;
 	
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|Navigation Path")
@@ -30,6 +40,14 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI|Navigation Path")
 		float waitingTimeOnPathPoint;
+
+	UPROPERTY(BlueprintReadOnly, Category = "AI")
+		bool bIsAlerted;
+
+	UPROPERTY(BlueprintReadOnly, Category = "UI")
+	bool bIsShowingHealthBar;
+
+	FTimerHandle TimerHandle_HideHealthBar;
 
 protected:
 	virtual void BeginPlay() override;
@@ -41,5 +59,15 @@ public:
 	AHA_Enemy();
 
 	float GetWaitingTime() { return waitingTimeOnPathPoint; };
+
+	bool IsAlerted() { return bIsAlerted; };
+
+	void SetAlerted(bool bValue);
+
+protected:
+
+	void ShowHealthBar();
+
+	void HideHealthBar();
 
 };

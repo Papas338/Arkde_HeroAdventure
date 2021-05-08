@@ -7,6 +7,8 @@
 
 void UHS_HUDUltimateBar::InitializeWidget()
 {
+	UltimateColor = UltimateColorEmpty;
+
 	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	if (IsValid(PlayerPawn))
 	{
@@ -22,7 +24,6 @@ void UHS_HUDUltimateBar::InitializeWidget()
 void UHS_HUDUltimateBar::UpdateUltimateBar(float CurrentUltimateCharge, float MaxUltimateCharge)
 {
 	UltimatePercent = CurrentUltimateCharge / MaxUltimateCharge;
-	UE_LOG(LogTemp, Warning, TEXT("Ultimate: %f"),UltimatePercent)
 }
 
 void UHS_HUDUltimateBar::UpdateUltimateStatus(bool bIsUltimateReady)

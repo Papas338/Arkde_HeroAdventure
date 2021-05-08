@@ -62,6 +62,12 @@ void AHS_AIControllerNew::UpdateSenses(const TArray<AActor*>& UpdatedActors)
 				{
 				case 0:
 					MyBlackboard->SetValueAsBool(CanSeePlayerKeyName, PerceptionInfo.LastSensedStimuli[i].WasSuccessfullySensed());
+
+					if (IsValid(MyEnemy))
+					{
+						MyEnemy->SetAlerted(PerceptionInfo.LastSensedStimuli[i].WasSuccessfullySensed());
+					}
+
 					break;
 				case 1:
 					UE_LOG(LogTemp, Warning, TEXT("Ouch"))
@@ -77,4 +83,9 @@ void AHS_AIControllerNew::UpdateSenses(const TArray<AActor*>& UpdatedActors)
 			}
 		}
 	}
+}
+
+void AHS_AIControllerNew::DeactivateAIPerception()
+{
+	AIPerceptionComponent->Deactivate();
 }

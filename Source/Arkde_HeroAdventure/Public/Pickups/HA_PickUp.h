@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -8,6 +8,7 @@
 
 class USphereComponent;
 class AHA_Character;
+class AHA_GameMode;
 
 UCLASS()
 class ARKDE_HEROADVENTURE_API AHA_PickUp : public AActor
@@ -18,6 +19,9 @@ protected:
 	//Components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USphereComponent* HitBoxComponent;
+
+	UPROPERTY(BlueprintReadOnly)
+	AHA_GameMode* GameModeReference;
 	
 public:	
 	// Sets default values for this actor's properties

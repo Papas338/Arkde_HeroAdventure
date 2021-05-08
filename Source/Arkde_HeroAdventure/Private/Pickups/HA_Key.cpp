@@ -4,6 +4,7 @@
 #include "Pickups/HA_Key.h"
 #include "Components/StaticMeshComponent.h"
 #include "HA_Character.h"
+#include "Core/HA_GameMode.h"
 
 AHA_Key::AHA_Key()
 {
@@ -17,9 +18,15 @@ AHA_Key::AHA_Key()
 }
 
 //Executes functions related with the item the player picked up
-void AHA_Key::PickUpItem(AHA_Character* PickupActor)
+void AHA_Key::PickUpItem(AHA_Character* PickupCharacter)
 {
-	Super::PickUpItem(PickupActor);
-	PickupActor->AddKey(Keytag);
+	Super::PickUpItem(PickupCharacter);
+	if (IsValid(PickupCharacter) && PickupCharacter->GetCharacterType() == EHA_CharacterType::CharacterType_Player)
+	{
+		if (IsValid(GameModeReference))
+		{
+			GameModeReference->AddKeyToCharacter(PickupCharacter, Keytag);
+		}
+	}
 	Destroy();
 }

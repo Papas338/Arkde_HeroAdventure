@@ -3,6 +3,8 @@
 
 #include "Weapons/HA_Weapon.h"
 #include "GameFramework/Character.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 // Sets default values
 AHA_Weapon::AHA_Weapon()
@@ -26,13 +28,14 @@ void AHA_Weapon::Tick(float DeltaTime)
 //Executes functions related with every weapon when an attack is executed
 void AHA_Weapon::StartWeaponAction()
 {
-
+	PlaySound(WeaponSoundEffect);
+	BP_StartWeaponAction();
 }
 
 //Executes functions related with every weapon when an attack is finished
 void AHA_Weapon::StopWeaponAction()
 {
-
+	BP_StopWeaponAction();
 }
 
 //Determines the owner for the weapon that is using the code
@@ -40,5 +43,23 @@ void AHA_Weapon::SetWeaponOwner(ACharacter* WeaponOwner)
 {
 	SetOwner(WeaponOwner);
 	CurrentWeaponOwner = WeaponOwner;
+}
+
+void AHA_Weapon::PlaySound(USoundCue* SoundCue, bool bIs3DSound, FVector SoundOrigin)
+{
+	if (!IsValid(SoundCue)) 
+	{
+		return;
+	}
+	UE_LOG(LogTemp, Warning, TEXT("This sounds"))
+
+	if (bIs3DSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), SoundCue, SoundOrigin);
+	}
+	else
+	{
+		UGameplayStatics::PlaySound2D(GetWorld(), SoundCue);
+	}
 }
 

@@ -8,16 +8,25 @@
 
 class AHA_Character;
 class AHA_SpectatingCamera;
+class AHA_Enemy;
+class USoundCue;
 
-/**
- * 
- */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnKeyAddedSignature, FName, KeyTag);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGameStateChangeSignature);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAlertModeChangeSignature, bool, bIsAlertMode);
+
 UCLASS()
 class ARKDE_HEROADVENTURE_API AHA_GameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 
 protected:
+	UPROPERTY(BlueprintReadOnly, Category = "Level")
+		bool bIsAlertMode;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Game")
+		FName MapName;
+
 	UPROPERTY(BlueprintReadOnly, Category = "Spectating Camera")
 		AHA_SpectatingCamera* VictoryCamera;
 
@@ -27,22 +36,60 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spectating Camera")
 		float CameraBlendTime;
 
+	FTimerHandle TimerHandle_BackToMainMenu;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Music")
+		USoundCue* VictoryMusic;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Music")
+		USoundCue* GameOverMusic;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Music")
+		TArray<AHA_Enemy*> LevelEnemies;
+
+public:
+	UPROPERTY(BlueprintAssignable)
+	FOnKeyAddedSignature OnKeyAddedDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnGameStateChangeSignature OnVictoryDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnGameStateChangeSignature OnGameOverDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnAlertModeChangeSignature OnAlertModeChangeDelegate;
+
 protected:
 	virtual void BeginPlay() override;
 
 	void SetUpSpectatingCameras();
+
+	void ChangeToSpectatorCamera(AHA_Character* Character, AHA_SpectatingCamera* SpectatorCamera);
+
+	void BackToMainMenu();
+
+	void PlayMusic(USoundCue* GameMusic);
 			
 public:
+	AHA_GameMode();
+
+	void CheckAlerts();
+
+	UFUNCTION()
 	void Victory(AHA_Character* Character);
+	UFUNCTION()
 	void GameOver(AHA_Character* Character);
+
+	UFUNCTION()
+	void AddKeyToCharacter(AHA_Character* KeyOwner, FName KeyTag);
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void BP_Victory(AHA_Character* Character);
 	UFUNCTION(BlueprintImplementableEvent)
 	void BP_GameOver(AHA_Character* Character);
 
-	void ChangeToSpectatorCamera(AHA_Character* Character, AHA_SpectatingCamera* SpectatorCamera);
-
+	UFUNCTION()
 	void DestroySceneObject(AActor* ThisActor, float TimeToDestroy);
 
 	UFUNCTION(BlueprintImplementableEvent)

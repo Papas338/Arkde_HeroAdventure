@@ -48,7 +48,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	//Detect player
-	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+	//virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
 	//Checks if the player can open the door
 	UFUNCTION()

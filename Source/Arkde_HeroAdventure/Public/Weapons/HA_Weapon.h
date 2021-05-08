@@ -8,6 +8,7 @@
 
 class UDamageType;
 class ACharacter;
+class USoundCue;
 
 UCLASS()
 class ARKDE_HEROADVENTURE_API AHA_Weapon : public AActor
@@ -23,6 +24,9 @@ protected:
 		TSubclassOf<UDamageType> DamageType;
 
 		ACharacter* CurrentWeaponOwner;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Audio")
+		USoundCue* WeaponSoundEffect;
 
 public:	
 	// Sets default values for this actor's properties
@@ -40,6 +44,14 @@ public:
 	virtual void StartWeaponAction();
 	virtual void StopWeaponAction();
 
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+		void BP_StartWeaponAction();
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+		void BP_StopWeaponAction();
+
 	//Finds the owner for the weapon
 	void SetWeaponOwner(ACharacter* WeaponOwner);
+
+	void PlaySound(USoundCue* SoundCue, bool bIs3DSound = false, FVector SoundOrigin = FVector::ZeroVector);
 };

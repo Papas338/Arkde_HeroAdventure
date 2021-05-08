@@ -8,10 +8,12 @@
 
 class UCameraComponent;
 class USpringArmComponent;
+class UAudioComponent;
 class AHA_Weapon;
 class UAnimMontage;
 class UAnimInstance;
 class UCapsuleComponent;
+class USoundCue;
 class UHA_HealthComponent;
 class AHA_GameMode;
 class UHA_UltimateAbilityComponent;
@@ -58,6 +60,13 @@ public:
 
 	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 		//UHA_UltimateAbilityComponent* UltimateAbilityComponent;
+
+	//Audio
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+		UAudioComponent* StepAudioComponent;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+		UAudioComponent* VoiceAudioComponent;
 
 	//Variables
 protected:
@@ -181,6 +190,16 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Game Over")
 		bool bHasToDestroy;
 
+	//Audio
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Audio")
+		USoundCue* HurtSound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Audio")
+		USoundCue* DeathSound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Audio")
+		USoundCue* UltimateSound;
+
 public:
 
 	UPROPERTY(BlueprintAssignable)
@@ -270,7 +289,6 @@ protected:
 	void SetUltimateWeapon();
 
 	//Ultimate Ability
-	void UpdateUltimateCharge(float Value);
 	void StartUltimate();
 	void StopUltimate();
 	void UpdateUltimateDuration();
@@ -319,4 +337,12 @@ public:
 	void ResetCombo();
 
 	int GetAttackSelected() { return AttackSelected; };
+
+	void PlayStepSound();
+
+	void PlayVoiceSound(USoundCue* VoiceSound);
+
+	//Ultimate
+
+	void UpdateUltimateCharge(float Value);
 };

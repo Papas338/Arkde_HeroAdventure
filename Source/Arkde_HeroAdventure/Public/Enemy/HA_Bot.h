@@ -10,6 +10,7 @@ class UStaticMeshComponent;
 class USphereComponent;
 class UHA_HealthComponent;
 class UMaterialInstanceDynamic;
+class USoundCue;
 
 UCLASS()
 class ARKDE_HEROADVENTURE_API AHA_Bot : public APawn
@@ -26,6 +27,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 		UHA_HealthComponent* HealthComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+		UAudioComponent* TickSoundComponent;
+
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Path")
 		FVector NextPathPoint;
@@ -38,6 +42,9 @@ protected:
 
 	UMaterialInstanceDynamic* BotMaterial;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Audio")
+		USoundCue* ExplosionSound;	
+
 public:
 	// Sets default values for this pawn's properties
 	AHA_Bot();
@@ -47,6 +54,10 @@ protected:
 	virtual void BeginPlay() override;
 
 	FVector GetNextPoint();
+
+	void PlayTimerSound();
+
+	void PlayExplosionSound();
 
 public:	
 	// Called every frame
