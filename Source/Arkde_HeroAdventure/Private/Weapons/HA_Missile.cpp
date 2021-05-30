@@ -9,6 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Core/HA_GameMode.h"
 #include "Arkde_HeroAdventure/Arkde_HeroAdventure.h"
+#include "Sound/Soundcue.h"
 
 // Sets default values
 AHA_Missile::AHA_Missile()
@@ -59,6 +60,10 @@ void AHA_Missile::ExplosionTrigger(UPrimitiveComponent* OverlappedComponent, AAc
 
 	if (IsValid(GameModeReference))
 	{
+		if (IsValid(ExplosionSound)) 
+		{
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), ExplosionSound, GetActorLocation());
+		}
 		GameModeReference->DestroySceneObject(this, 0.1f);
 	}
 }

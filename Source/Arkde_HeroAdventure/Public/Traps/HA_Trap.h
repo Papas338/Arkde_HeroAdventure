@@ -10,6 +10,7 @@ class UBoxComponent;
 class UStaticMeshComponent;
 class UHA_HealthComponent;
 class UParticleSystem;
+class USoundCue;
 
 UCLASS()
 class ARKDE_HEROADVENTURE_API AHA_Trap : public AActor
@@ -26,6 +27,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 		UHA_HealthComponent* HealthComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effects")
+		USoundCue* ExplosionSound;
 
 //Variables
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Trap")

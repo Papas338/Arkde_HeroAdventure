@@ -12,6 +12,7 @@ class UProjectileMovementComponent;
 class UHA_HealthComponent;
 class AHA_GameMode;
 class AController;
+class USoundCue;
 
 UCLASS()
 class ARKDE_HEROADVENTURE_API AHA_Missile : public AActor
@@ -48,6 +49,9 @@ protected:
 	AHA_GameMode* GameModeReference;
 
 	AController* thisController;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effects")
+		USoundCue* ExplosionSound;
 	
 public:	
 	// Sets default values for this actor's properties

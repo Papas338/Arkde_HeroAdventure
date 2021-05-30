@@ -11,6 +11,7 @@ class UCapsuleComponent;
 class USceneComponent;
 class AHA_Character;
 class AHA_Bot;
+class USoundCue;
 
 UCLASS()
 class ARKDE_HEROADVENTURE_API AHA_Cannon : public AActor
@@ -43,6 +44,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Cannon")
 		float CannonAngle;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effects")
+		USoundCue* ShotSound;
 
 	AHA_Character* PlayerReference;
 

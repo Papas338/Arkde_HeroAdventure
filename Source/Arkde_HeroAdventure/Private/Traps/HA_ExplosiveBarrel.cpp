@@ -7,6 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/Actor.h"
+#include "Sound/Soundcue.h"
 
 AHA_ExplosiveBarrel::AHA_ExplosiveBarrel()
 {
@@ -35,7 +36,11 @@ void AHA_ExplosiveBarrel::OnHitReceived(UHA_HealthComponent * ThisHealthComponen
 				UE_LOG(LogTemp, Warning, TEXT("KABOOM"))
 				UGameplayStatics::ApplyRadialDamage(GetWorld(), TrapDamage, GetActorLocation(), DamageRadius, TrapDamageType, IgnoredActors, this, thisController);
 				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), TrapEffect, GetActorLocation());
-				
+
+				if (IsValid(ExplosionSound))
+				{
+					UGameplayStatics::PlaySoundAtLocation(GetWorld(), ExplosionSound, GetActorLocation());
+				}
 				GameModeReference->DestroySceneObject(this, 0.1f);
 			}
 		}

@@ -545,7 +545,6 @@ void AHA_Character::StartUltimate()
 	{
 		bIsUsingUltimate = true;
 		CurrentUltimateCharge = 0.0f;
-		bCanUseUltimate = false;
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle_Ultimate, this, &AHA_Character::UpdateUltimateDuration, UltimateDurationFrecuency, true);
 		UE_LOG(LogTemp, Warning, TEXT("Ultimated started"))
 		UltimateBehaviour();
@@ -554,7 +553,6 @@ void AHA_Character::StartUltimate()
 
 void AHA_Character::StopUltimate()
 {
-
 }
 
 void AHA_Character::UpdateUltimateDuration()
@@ -602,6 +600,8 @@ void AHA_Character::UltimateBehaviour()
 
 void AHA_Character::RestorePlayer()
 {
+
+	bCanUseUltimate = false;
 	GetWorld()->GetTimerManager().ClearTimer(TimerHandle_CannonShot);
 	float UltimateAnimationDuration = MyAnimInstance->Montage_Play(UltimateMontage);
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle_CannonShot, this, &AHA_Character::RestoreMovement, UltimateAnimationDuration, false);

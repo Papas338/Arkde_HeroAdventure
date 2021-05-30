@@ -8,6 +8,7 @@
 #include "Arkde_HeroAdventure/Arkde_HeroAdventure.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Character.h"
+#include "Sound/Soundcue.h"
 
 AHA_Landmine::AHA_Landmine()
 {
@@ -43,6 +44,10 @@ void AHA_Landmine::OnHitReceived(UHA_HealthComponent * ThisHealthComponent, AAct
 
 			if (IsValid(GameModeReference))
 			{
+				if (IsValid(ExplosionSound))
+				{
+					UGameplayStatics::PlaySoundAtLocation(GetWorld(), ExplosionSound, GetActorLocation());
+				}
 				GameModeReference->DestroySceneObject(this, 0.1f);
 			}
 		}		

@@ -298,6 +298,8 @@ protected:
 	void ShootCannon();
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void BP_UpdateUltimateDuration();
+	UFUNCTION(BlueprintCallable)
+	bool GetCanUseUltimate() { return bCanUseUltimate; };
 	
 	void ExitToMainMenu();
 

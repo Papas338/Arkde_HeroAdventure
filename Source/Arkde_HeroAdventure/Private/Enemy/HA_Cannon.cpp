@@ -10,6 +10,7 @@
 #include "HA_Character.h"
 #include "Enemy/HA_Bot.h"
 #include "Enemy/HA_ExplosiveBot.h"
+#include "Sound/Soundcue.h"
 
 // Sets default values
 AHA_Cannon::AHA_Cannon()
@@ -66,6 +67,11 @@ void AHA_Cannon::ShootBot()
 			}
 		}
 		NewBot->FinishSpawning(BotTransform);
+
+		if (IsValid(ShotSound))
+		{
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), ShotSound, GetActorLocation());
+		}
 	}	
 }
 
