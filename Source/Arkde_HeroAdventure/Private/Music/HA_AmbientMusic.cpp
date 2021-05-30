@@ -17,7 +17,7 @@ AHA_AmbientMusic::AHA_AmbientMusic()
 
 	MusicAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("MusicAudioComponent"));
 
-	AlertParamName = "Alert";
+	AlertParamName = "Maze";
 }
 
 // Called when the game starts or when spawned

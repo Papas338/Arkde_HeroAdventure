@@ -9,6 +9,7 @@
 class AHA_Character;
 class AHA_SpectatingCamera;
 class AHA_Enemy;
+class AHA_MazeZone;
 class USoundCue;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnKeyAddedSignature, FName, KeyTag);
@@ -22,7 +23,7 @@ class ARKDE_HEROADVENTURE_API AHA_GameMode : public AGameModeBase
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Level")
-		bool bIsAlertMode;
+		bool bIsInMaze;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Game")
 		FName MapName;
@@ -46,6 +47,9 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Music")
 		TArray<AHA_Enemy*> LevelEnemies;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Music")
+		AHA_MazeZone* MazeLevel;
 
 public:
 	UPROPERTY(BlueprintAssignable)

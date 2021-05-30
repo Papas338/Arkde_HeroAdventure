@@ -24,6 +24,7 @@ protected:
 
 protected:
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Audio")
 	FName AlertParamName;
 
 	AHA_GameMode* GameModeReference;

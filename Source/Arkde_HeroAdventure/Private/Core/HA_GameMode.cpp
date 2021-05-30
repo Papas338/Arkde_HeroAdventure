@@ -9,7 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "HA_SpectatingCamera.h"
 #include "Sound/SoundCue.h"
-#include "Enemy/HA_Enemy.h"
+#include "HA_MazeZone.h"
 
 void AHA_GameMode::BeginPlay()
 {
@@ -17,20 +17,10 @@ void AHA_GameMode::BeginPlay()
 
 	SetUpSpectatingCameras();
 
-	TArray<AActor*> EnemyActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AHA_Enemy::StaticClass(), EnemyActors);
-	for (AActor* EnemyActor : EnemyActors)
+	AActor* MazeActor = UGameplayStatics::GetActorOfClass(GetWorld(), AHA_MazeZone::StaticClass());
+	if (IsValid(MazeActor))
 	{
-		if (!IsValid(EnemyActor))
-		{
-			continue;
-		}
-
-		AHA_Enemy* NewEnemy = Cast<AHA_Enemy>(EnemyActor);
-		if (IsValid(NewEnemy))
-		{
-			LevelEnemies.AddUnique(NewEnemy);
-		}
+		MazeLevel = Cast<AHA_MazeZone>(MazeActor);
 	}
 }
 
@@ -150,28 +140,23 @@ AHA_GameMode::AHA_GameMode()
 
 void AHA_GameMode::CheckAlerts()
 {
-	bool bEnemyInAlertMode = false;
+	bIsInMaze = false;
+	UE_LOG(LogTemp, Warning, TEXT("checkdone"))
 
-	for (AHA_Enemy* EnemyInLevel : LevelEnemies)
-	{
-		if (!IsValid(EnemyInLevel))
+	if (IsValid(MazeLevel)) {
+		if (MazeLevel->IsInZone())
 		{
-			continue;
+			bIsInMaze = true;
+			UE_LOG(LogTemp, Warning, TEXT("true"))
 		}
-
-		if (EnemyInLevel->IsAlerted())
+		else
 		{
-			bEnemyInAlertMode = true;
-			break;
+			bIsInMaze = false;
+			UE_LOG(LogTemp, Warning, TEXT("false"))
 		}
 	}
+	OnAlertModeChangeDelegate.Broadcast(bIsInMaze);
 
-	if (bEnemyInAlertMode != bIsAlertMode)
-	{
-		bIsAlertMode = bEnemyInAlertMode;
-
-		OnAlertModeChangeDelegate.Broadcast(bIsAlertMode);
-	}
 }
 
 void AHA_GameMode::DestroySceneObject(AActor* ThisActor, float TimeToDestroy)
