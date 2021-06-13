@@ -4,10 +4,12 @@
 #include "Core/HA_GameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "SaveSystem/HS_SaveGame.h"
+#include "Core/HA_SpawnPoint.h"
 
 UHA_GameInstance::UHA_GameInstance()
 {
 	SaveSlotName = "HS_SaveData";
+	PlayerPosition = FVector(0.0f, 0.0f, 100.0f);
 }
 
 void UHA_GameInstance::SaveData()
@@ -60,7 +62,7 @@ void UHA_GameInstance::LoadData()
 
 void UHA_GameInstance::ResetData()
 {
-	PlayerPosition = FVector(-32.0f, 129.0f, 90.0f);
+	PlayerPosition = FVector(-32.0f, 129.0f, 100.0f);
 	bAreCannonsActive = false;
 	BP_ResetData();
 }

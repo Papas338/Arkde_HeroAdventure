@@ -4,6 +4,7 @@
 #include "HA_MazeZone.h"
 #include "Components/BoxComponent.h"
 #include "Core/HA_GameMode.h"
+#include "HA_Character.h"
 
 // Sets default values
 AHA_MazeZone::AHA_MazeZone()
@@ -13,6 +14,8 @@ AHA_MazeZone::AHA_MazeZone()
 
 	HitBoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("HitboxComponent"));
 	HitBoxComponent->SetupAttachment(RootComponent);
+	HitBoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+	HitBoxComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 
 }
 
@@ -29,14 +32,20 @@ void AHA_MazeZone::BeginPlay()
 
 void AHA_MazeZone::EnterZone(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	bIsInZone = true;
-	GameModeReference->CheckAlerts();
+	AHA_Character* PlayerCharacter = Cast<AHA_Character>(OtherActor);
+	if (IsValid(PlayerCharacter) && PlayerCharacter->GetCharacterType() == EHA_CharacterType::CharacterType_Player) {
+		bIsInZone = true;
+		GameModeReference->CheckAlerts();
+	}
 }
 
 void AHA_MazeZone::ExitZone(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	bIsInZone = false;
-	GameModeReference->CheckAlerts();
+	AHA_Character* PlayerCharacter = Cast<AHA_Character>(OtherActor);
+	if (IsValid(PlayerCharacter) && PlayerCharacter->GetCharacterType() == EHA_CharacterType::CharacterType_Player) {
+		bIsInZone = false;
+		GameModeReference->CheckAlerts();
+	}
 }
 
 

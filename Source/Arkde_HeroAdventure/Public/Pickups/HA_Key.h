@@ -28,6 +28,8 @@ public:
 	AHA_Key();
 
 public:
+	void SetKeyTag(FName NewTag) { Keytag = NewTag; };
+
 	//Returns the tag for the specified key on the scene
 	UFUNCTION(BlueprintCallable, Category = "Getter")
 		FName GetKeyTag() const { return Keytag; };

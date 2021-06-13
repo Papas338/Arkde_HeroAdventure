@@ -68,27 +68,18 @@ void AHA_GameMode::Victory(AHA_Character* Character)
 
 void AHA_GameMode::GameOver(AHA_Character* Character)
 {
-	UE_LOG(LogTemp, Log, TEXT("Funciona"))
 	Character->GetMovementComponent()->StopMovementImmediately();
 	Character->GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
-	if (Character->HasToDestroy())
-	{
-		Character->SetLifeSpan(5.0f);
-		Character->DetachFromControllerPendingDestroy();
-	}
-	else
-	{
-		ChangeToSpectatorCamera(Character, GameOverCamera);
-		Character->DisableInput(nullptr);
-	}
+		
+	ChangeToSpectatorCamera(Character, GameOverCamera);
+	Character->DisableInput(nullptr);
 
 	OnGameOverDelegate.Broadcast();
 
 	PlayMusic(GameOverMusic);
 
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle_BackToMainMenu, this, &AHA_GameMode::BackToMainMenu, 8.0f, false);
-
+	
 	BP_GameOver(Character);
 }
 
@@ -99,6 +90,12 @@ void AHA_GameMode::AddKeyToCharacter(AHA_Character* KeyOwner, FName KeyTag)
 		OnKeyAddedDelegate.Broadcast(KeyTag);
 		KeyOwner->AddKey(KeyTag);
 	}
+}
+
+void AHA_GameMode::AddEnemyKilled()
+{
+	EnemiesKilled++;
+	OnEnemyKilledDelegate.Broadcast(EnemiesKilled);
 }
 
 void AHA_GameMode::ChangeToSpectatorCamera(AHA_Character * Character, AHA_SpectatingCamera* SpectatorCamera)
@@ -141,18 +138,15 @@ AHA_GameMode::AHA_GameMode()
 void AHA_GameMode::CheckAlerts()
 {
 	bIsInMaze = false;
-	UE_LOG(LogTemp, Warning, TEXT("checkdone"))
 
 	if (IsValid(MazeLevel)) {
 		if (MazeLevel->IsInZone())
 		{
 			bIsInMaze = true;
-			UE_LOG(LogTemp, Warning, TEXT("true"))
 		}
 		else
 		{
 			bIsInMaze = false;
-			UE_LOG(LogTemp, Warning, TEXT("false"))
 		}
 	}
 	OnAlertModeChangeDelegate.Broadcast(bIsInMaze);

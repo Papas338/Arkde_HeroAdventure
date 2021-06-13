@@ -27,6 +27,8 @@ AHA_Cannon::AHA_Cannon()
 
 	ShotLocation = CreateDefaultSubobject<USceneComponent>(TEXT("ShootLocationComponent"));
 	ShotLocation->SetupAttachment(CannonMeshComponent);
+
+	bIsCannonActive = false;
 }
 
 // Called when the game starts or when spawned
@@ -52,6 +54,9 @@ void AHA_Cannon::Tick(float DeltaTime)
 
 void AHA_Cannon::ShootBot()
 {
+	if (!bIsCannonActive) {
+		return;
+	}
 	if (bIsBotAlived == false)
 	{
 		FVector ShotOrigin = ShotLocation->GetComponentLocation();
@@ -77,6 +82,10 @@ void AHA_Cannon::ShootBot()
 
 void AHA_Cannon::RotateCannon()
 {
+	if (!bIsCannonActive) 
+	{
+		return;
+	}
 	PlayerPosition = GetActorLocation() - PlayerReference->GetActorLocation();
 	PointingDirection = UKismetMathLibrary::MakeRotFromX(PlayerPosition);
 	PointingDirection.Pitch += CannonAngle;

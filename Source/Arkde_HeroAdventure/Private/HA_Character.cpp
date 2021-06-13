@@ -124,6 +124,8 @@ void AHA_Character::InitializeReferences()
 	GameModeReference = Cast<AHA_GameMode>(GetWorld()->GetAuthGameMode());
 
 	GameInstanceReference = Cast<UHA_GameInstance>(GetWorld()->GetGameInstance());
+
+	
 }
 
 void AHA_Character::SetInitialPosition()
@@ -514,14 +516,12 @@ void AHA_Character::OnHealthChange(UHA_HealthComponent* ThisHealthComponent, AAc
 	if (HealthComponent->IsDead())
 	{
 		PlayVoiceSound(DeathSound);
-
-		if (GetCharacterType() == EHA_CharacterType::CharacterType_Player)
+				
+		if (IsValid(GameModeReference) && !HasToDestroy())
 		{
-			if (IsValid(GameModeReference))
-			{
-				GameModeReference->GameOver(this);
-			}
+			GameModeReference->GameOver(this);
 		}
+		
 	}
 }
 

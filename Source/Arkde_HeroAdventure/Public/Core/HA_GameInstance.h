@@ -6,9 +6,8 @@
 #include "Engine/GameInstance.h"
 #include "HA_GameInstance.generated.h"
 
-/**
- *
- */
+class AHA_SpawnPoint;
+
 UCLASS()
 class ARKDE_HEROADVENTURE_API UHA_GameInstance : public UGameInstance
 {
@@ -26,7 +25,7 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = "SaveData")
 		FVector PlayerPosition;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Save system")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SaveSystem")
 		FString SaveSlotName;
 
 public:

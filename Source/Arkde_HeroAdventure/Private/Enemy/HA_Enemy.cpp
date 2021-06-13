@@ -8,6 +8,7 @@
 #include "Components/HA_HealthComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Core/HA_GameMode.h"
+#include "Pickups/HA_KeySpawner.h"
 #include "Weapons/HA_Weapon.h"
 #include "UI/Enemy/HS_EnemyHealthBar.h"
 
@@ -15,6 +16,8 @@ AHA_Enemy::AHA_Enemy()
 {
 	WidgetHealthBarComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetHealthBarComponent"));
 	WidgetHealthBarComponent->SetupAttachment(RootComponent);
+
+	bIsSetToDespawn = false;
 }
 void AHA_Enemy::BeginPlay()
 {
@@ -22,6 +25,8 @@ void AHA_Enemy::BeginPlay()
 
 	HealthComponent->OnHealthChangeDelegate.AddDynamic(this, &AHA_Enemy::HealthChanged);
 	MyController = Cast<AHS_AIControllerNew>(GetController());
+
+	
 	
 	UUserWidget* UserWidget = WidgetHealthBarComponent->GetUserWidgetObject();
 	if (IsValid(UserWidget))
@@ -50,8 +55,10 @@ void AHA_Enemy::HealthChanged(UHA_HealthComponent* CurrentHealthComponent, AActo
 
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle_HideHealthBar, this, &AHA_Enemy::HideHealthBar, 1.0f, false);
 
-	if (HealthComponent->IsDead())
+	if (HealthComponent->IsDead() && !bIsSetToDespawn)
 	{
+		ConnectedSpawner->RemoveEnemy(this);
+
 		MyController->DeactivateAIPerception();
 
 		MyController->UnPossess();
@@ -59,6 +66,15 @@ void AHA_Enemy::HealthChanged(UHA_HealthComponent* CurrentHealthComponent, AActo
 		SetAlerted(false);
 
 		HideHealthBar();
+
+		GameModeReference->AddEnemyKilled();
+
+		if (HasToDestroy())
+		{
+			bIsSetToDespawn = true;
+			SetLifeSpan(5.0f);
+			DetachFromControllerPendingDestroy();
+		}
 	}
 	else
 	{

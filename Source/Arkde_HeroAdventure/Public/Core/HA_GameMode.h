@@ -13,6 +13,7 @@ class AHA_MazeZone;
 class USoundCue;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnKeyAddedSignature, FName, KeyTag);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEnemyKilledSignature, float, EnemiesKilledAmount);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGameStateChangeSignature);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAlertModeChangeSignature, bool, bIsAlertMode);
 
@@ -37,6 +38,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spectating Camera")
 		float CameraBlendTime;
 
+	UPROPERTY(BlueprintReadOnly, Category = "Death counter")
+		float EnemiesKilled;
+
 	FTimerHandle TimerHandle_BackToMainMenu;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Music")
@@ -44,9 +48,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Music")
 		USoundCue* GameOverMusic;
-
-	UPROPERTY(BlueprintReadOnly, Category = "Music")
-		TArray<AHA_Enemy*> LevelEnemies;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Music")
 		AHA_MazeZone* MazeLevel;
@@ -63,6 +64,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnAlertModeChangeSignature OnAlertModeChangeDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnEnemyKilledSignature OnEnemyKilledDelegate;
 
 protected:
 	virtual void BeginPlay() override;
@@ -87,6 +91,8 @@ public:
 
 	UFUNCTION()
 	void AddKeyToCharacter(AHA_Character* KeyOwner, FName KeyTag);
+
+	void AddEnemyKilled();
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void BP_Victory(AHA_Character* Character);

@@ -39,6 +39,9 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = "Cannon")
 		bool bIsBotAlived;
 
+	UPROPERTY(BlueprintReadOnly, Category = "Cannon")
+		bool bIsCannonActive;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Cannon")
 		TSubclassOf<AHA_Bot> BotToShoot;
 

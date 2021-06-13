@@ -51,7 +51,6 @@ void AHA_Weapon::PlaySound(USoundCue* SoundCue, bool bIs3DSound, FVector SoundOr
 	{
 		return;
 	}
-	UE_LOG(LogTemp, Warning, TEXT("This sounds"))
 
 	if (bIs3DSound)
 	{
