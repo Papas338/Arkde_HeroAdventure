@@ -11,6 +11,7 @@ class AActor;
 class AHA_Enemy;
 class AHA_Key;
 class AHA_PickUp;
+class AHA_GameMode;
 
 UCLASS()
 class ARKDE_HEROADVENTURE_API AHA_KeySpawner : public AActor
@@ -22,17 +23,15 @@ protected:
 		UBillboardComponent* SpawnerBillboardComponent;
 
 protected:
-	UPROPERTY(BlueprintReadOnly, Category = "Spawner")
-		TArray<AActor*> EnemyActors;
-
-	UPROPERTY(BlueprintReadOnly, Category = "Spawner")
-		TArray<AHA_Enemy*> EnemyCharacters;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Spawner")
 		bool bHasSpawned;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Spawner")
 		AHA_Key* KeySpawned;
+
+	UPROPERTY(BlueprintReadOnly, Category = "References")
+		AHA_GameMode* GameModeReference;
 
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawner")
@@ -46,7 +45,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	void SpawnKey();
+	UFUNCTION()
+	void SpawnKey(float EnemiesKilled);
 
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	void BP_SpawnKey();
@@ -54,6 +54,4 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	void RemoveEnemy(AHA_Enemy* EnemyToRemove);
 };

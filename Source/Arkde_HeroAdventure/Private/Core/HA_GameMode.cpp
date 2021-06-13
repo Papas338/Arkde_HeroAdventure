@@ -87,7 +87,6 @@ void AHA_GameMode::AddKeyToCharacter(AHA_Character* KeyOwner, FName KeyTag)
 {
 	if (IsValid(KeyOwner))
 	{
-		OnKeyAddedDelegate.Broadcast(KeyTag);
 		KeyOwner->AddKey(KeyTag);
 	}
 }

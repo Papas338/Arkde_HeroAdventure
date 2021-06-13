@@ -8,7 +8,6 @@
 #include "Components/HA_HealthComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Core/HA_GameMode.h"
-#include "Pickups/HA_KeySpawner.h"
 #include "Weapons/HA_Weapon.h"
 #include "UI/Enemy/HS_EnemyHealthBar.h"
 
@@ -57,8 +56,6 @@ void AHA_Enemy::HealthChanged(UHA_HealthComponent* CurrentHealthComponent, AActo
 
 	if (HealthComponent->IsDead() && !bIsSetToDespawn)
 	{
-		ConnectedSpawner->RemoveEnemy(this);
-
 		MyController->DeactivateAIPerception();
 
 		MyController->UnPossess();

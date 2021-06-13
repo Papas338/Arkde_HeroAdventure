@@ -2,6 +2,7 @@
 
 
 #include "Pickups/HA_KeySpawner.h"
+#include "Core/HA_GameMode.h"
 #include "Components/Billboardcomponent.h"
 #include "Enemy/HA_Enemy.h"
 #include "Kismet/GameplayStatics.h"
@@ -20,21 +21,15 @@ AHA_KeySpawner::AHA_KeySpawner()
 void AHA_KeySpawner::BeginPlay()
 {
 	Super::BeginPlay();
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AHA_Enemy::StaticClass(), EnemyActors);
-	for (AActor* EnemyActor : EnemyActors)
-	{
-		if (IsValid(EnemyActor))
-		{
-			AHA_Enemy* ThisEnemy = Cast<AHA_Enemy>(EnemyActor);
-			ThisEnemy->SetKeySpawner(this);
-			EnemyCharacters.Add(ThisEnemy);
-		}
-	}
+	
+	GameModeReference = Cast<AHA_GameMode>(GetWorld()->GetAuthGameMode());
+
+	GameModeReference->OnEnemyKilledDelegate.AddDynamic(this, &AHA_KeySpawner::SpawnKey);
 }
 
-void AHA_KeySpawner::SpawnKey()
+void AHA_KeySpawner::SpawnKey(float EnemiesKilled)
 {
-	if (bHasSpawned)
+	if (bHasSpawned || EnemiesKilled < 2)
 	{
 		return;
 	}
@@ -51,13 +46,5 @@ void AHA_KeySpawner::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
-	if (EnemyCharacters.Num() <= 5) {
-		SpawnKey();
-	}
-}
-
-void AHA_KeySpawner::RemoveEnemy(AHA_Enemy* EnemyToRemove)
-{
-	EnemyCharacters.Remove(EnemyToRemove);
 }
 

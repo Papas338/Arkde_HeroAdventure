@@ -5,10 +5,12 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SceneComponent.h"
+#include "Core/HA_GameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "HA_Character.h"
 #include "Enemy/HA_Bot.h"
+#include "Enemy/HA_CannonsTrigger.h"
 #include "Enemy/HA_ExplosiveBot.h"
 #include "Sound/Soundcue.h"
 
@@ -29,6 +31,7 @@ AHA_Cannon::AHA_Cannon()
 	ShotLocation->SetupAttachment(CannonMeshComponent);
 
 	bIsCannonActive = false;
+	bIsBotAlived = false;
 }
 
 // Called when the game starts or when spawned
@@ -39,7 +42,18 @@ void AHA_Cannon::BeginPlay()
 	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	PlayerReference = Cast<AHA_Character>(PlayerPawn);
 
-	bIsBotAlived = false;
+	GameModeReference = Cast<AHA_GameMode>(GetWorld()->GetAuthGameMode());
+
+	GameModeReference->OnEnemyKilledDelegate.AddDynamic(this, &AHA_Cannon::DeactivateCannon);
+
+	AActor* CannonTriggerActor = UGameplayStatics::GetActorOfClass(GetWorld(), AHA_CannonsTrigger::StaticClass());
+	if (IsValid(CannonTriggerActor))
+	{
+		CannonTriggerReference = Cast<AHA_CannonsTrigger>(CannonTriggerActor);
+		CannonTriggerReference->OnCannonCollisionDelegate.AddDynamic(this, &AHA_Cannon::ActivateCannon);
+	}
+	
+
 }
 
 // Called every frame
@@ -90,5 +104,17 @@ void AHA_Cannon::RotateCannon()
 	PointingDirection = UKismetMathLibrary::MakeRotFromX(PlayerPosition);
 	PointingDirection.Pitch += CannonAngle;
 	SetActorRotation(PointingDirection);
+}
+
+void AHA_Cannon::ActivateCannon()
+{
+	bIsCannonActive = true;
+}
+
+void AHA_Cannon::DeactivateCannon(float EnemiesKilled)
+{
+	if (EnemiesKilled == 7) {
+		bIsCannonActive = false;
+	}
 }
 

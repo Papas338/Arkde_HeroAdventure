@@ -10,7 +10,6 @@ class AHA_PathActor;
 class UCameraComponent;
 class UBlackboardComponent;
 class AHS_AIControllerNew;
-class AHA_KeySpawner;
 class UWidgetComponent;
 class UHS_EnemyHealthBar;
 class AHA_GameMode;
@@ -35,9 +34,6 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "UI")
 		UHS_EnemyHealthBar* EnemyHealthBar;
-
-	UPROPERTY(BlueprintReadOnly, Category = "KeySpawner")
-		AHA_KeySpawner* ConnectedSpawner;
 
 	UPROPERTY(BlueprintReadOnly, Category = "UI")
 		bool bIsSetToDespawn;
@@ -71,8 +67,6 @@ public:
 	bool IsAlerted() { return bIsAlerted; };
 
 	void SetAlerted(bool bValue);
-
-	void SetKeySpawner(AHA_KeySpawner* MySpawner) { ConnectedSpawner = MySpawner; };
 
 protected:
 

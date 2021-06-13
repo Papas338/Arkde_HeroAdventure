@@ -12,6 +12,8 @@ class USceneComponent;
 class AHA_Character;
 class AHA_Bot;
 class USoundCue;
+class AHA_GameMode;
+class AHA_CannonsTrigger;
 
 UCLASS()
 class ARKDE_HEROADVENTURE_API AHA_Cannon : public AActor
@@ -51,7 +53,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effects")
 		USoundCue* ShotSound;
 
-	AHA_Character* PlayerReference;
+	UPROPERTY(BlueprintReadOnly, Category = "References")
+		AHA_Character* PlayerReference;
+
+	UPROPERTY(BlueprintReadOnly, Category = "References")
+		AHA_GameMode* GameModeReference;
+
+	UPROPERTY(BlueprintReadOnly, Category = "References")
+		AHA_CannonsTrigger* CannonTriggerReference;
 
 public:
 	// Sets default values for this actor's properties
@@ -71,4 +80,10 @@ public:
 
 protected:
 	void RotateCannon();
+
+	UFUNCTION()
+	void ActivateCannon();
+
+	UFUNCTION()
+	void DeactivateCannon(float EnemiesKilled);
 };

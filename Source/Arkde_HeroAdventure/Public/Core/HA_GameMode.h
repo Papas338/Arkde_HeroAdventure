@@ -12,7 +12,6 @@ class AHA_Enemy;
 class AHA_MazeZone;
 class USoundCue;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnKeyAddedSignature, FName, KeyTag);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEnemyKilledSignature, float, EnemiesKilledAmount);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGameStateChangeSignature);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAlertModeChangeSignature, bool, bIsAlertMode);
@@ -53,9 +52,6 @@ protected:
 		AHA_MazeZone* MazeLevel;
 
 public:
-	UPROPERTY(BlueprintAssignable)
-	FOnKeyAddedSignature OnKeyAddedDelegate;
-
 	UPROPERTY(BlueprintAssignable)
 	FOnGameStateChangeSignature OnVictoryDelegate;
 

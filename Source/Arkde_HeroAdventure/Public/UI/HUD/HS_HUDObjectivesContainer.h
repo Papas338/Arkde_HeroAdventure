@@ -31,5 +31,5 @@ public:
 	void InitializeObjectives(TArray<UHS_HUDObjective*> NewObjectives);
 
 	UFUNCTION()
-	void UpdateObjectives(FName KeyTag);
+	void UpdateObjectives(float EnemiesKilled);
 };

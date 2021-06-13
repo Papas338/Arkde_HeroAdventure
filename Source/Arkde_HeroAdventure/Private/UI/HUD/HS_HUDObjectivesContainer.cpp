@@ -10,7 +10,7 @@ void UHS_HUDObjectivesContainer::InitializeWidget()
 	GameModeReference = Cast<AHA_GameMode>(GetWorld()->GetAuthGameMode());
 	if (IsValid(GameModeReference)) 
 	{
-		GameModeReference->OnKeyAddedDelegate.AddDynamic(this, &UHS_HUDObjectivesContainer::UpdateObjectives);
+		GameModeReference->OnEnemyKilledDelegate.AddDynamic(this, &UHS_HUDObjectivesContainer::UpdateObjectives);
 	}
 }
 
@@ -22,16 +22,16 @@ void UHS_HUDObjectivesContainer::InitializeObjectives(TArray<UHS_HUDObjective*> 
 	}
 }
 
-void UHS_HUDObjectivesContainer::UpdateObjectives(FName KeyTag)
+void UHS_HUDObjectivesContainer::UpdateObjectives(float EnemiesKilled)
 {
 	int ObjectivesIndex = -1;
 
-	if (KeyTag == "KeyA")
+	if (EnemiesKilled >= 2)
 	{
 		ObjectivesIndex = 0;
 	}
 
-	if (KeyTag == "KeyB")
+	if (EnemiesKilled == 7)
 	{
 		ObjectivesIndex = 1;
 	}
