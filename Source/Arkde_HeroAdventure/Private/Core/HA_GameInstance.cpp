@@ -31,6 +31,13 @@ void UHA_GameInstance::SaveData()
 		{
 			SaveFile->SetAreCannonsActive(bAreCannonsActive);
 			SaveFile->SetPlayerPosition(PlayerPosition);
+			if (!KeysOwned.Num() == 0)
+			{
+				for (FName KeyToAdd : KeysOwned)
+				{
+					SaveFile->SetKeyToPlayer(KeyToAdd);
+				}
+			}			
 
 			UGameplayStatics::SaveGameToSlot(SaveFile,SaveSlotName, 0);
 		}
@@ -56,6 +63,7 @@ void UHA_GameInstance::LoadData()
 		{
 			PlayerPosition = SaveFile->GetPlayerPosition();
 			bAreCannonsActive = SaveFile->GetAreCannonsActive();
+			KeysOwned = SaveFile->GetPlayerKeys();
 		}
 	}
 }
@@ -64,5 +72,6 @@ void UHA_GameInstance::ResetData()
 {
 	PlayerPosition = FVector(-32.0f, 129.0f, 100.0f);
 	bAreCannonsActive = false;
+	KeysOwned.Empty();
 	BP_ResetData();
 }

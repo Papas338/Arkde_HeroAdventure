@@ -285,13 +285,13 @@ protected:
 
 	//Weapons
 	void SetInitialWeapon();
-	void SetSecondaryWeapon();
 	void SetUltimateWeapon();
 
 	//Ultimate Ability
 	void StartUltimate();
 	void StopUltimate();
 	void UpdateUltimateDuration();
+	void FinishUltimate();
 	void UltimateBehaviour();
 	void RestorePlayer();
 	void RestoreMovement();
@@ -332,6 +332,8 @@ public:
 
 	//Weapons
 	void SetDoingMelee(bool NewDoingMeleeStatus);
+	void SetFireWeaponClass(TSubclassOf<AHA_Weapon> NewWeapon) { FireWeaponClass = NewWeapon; };
+	void SetSecondaryWeapon();
 
 	float GetComboMultiplier() { return ComboMultiplier; };
 	void SetComboAvailable(bool NewComboAvailableState);
@@ -347,4 +349,5 @@ public:
 	//Ultimate
 
 	void UpdateUltimateCharge(float Value);
+
 };

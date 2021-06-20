@@ -22,6 +22,9 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, Category = "SaveData")
 		FVector PlayerPosition;
 
+	UPROPERTY(VisibleDefaultsOnly, Category = "SaveData")
+		TArray<FName> KeysOwned;
+
 public:
 	UFUNCTION(BlueprintCallable)
 		void SetAreCannonsActive(bool NewState) { bAreCannonsActive = NewState; };
@@ -34,5 +37,11 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		FVector GetPlayerPosition() { return PlayerPosition; };
+
+	UFUNCTION(BlueprintCallable)
+		void SetKeyToPlayer(FName NewKey) { KeysOwned.Add(NewKey); };
+
+	UFUNCTION(BlueprintCallable)
+		TArray<FName> GetPlayerKeys() { return KeysOwned; };
 
 };

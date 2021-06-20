@@ -22,7 +22,16 @@ AHA_Sniper::AHA_Sniper()
 void AHA_Sniper::StartWeaponAction()
 {
 	Super::StartWeaponAction();
+	if (bIsOnCooldown)
+	{
+		return;
+	}
+	bIsOnCooldown = true;
 
+	GetWorld()->GetTimerManager().ClearTimer(TimerHandle_WeaponFireRate);
+
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle_WeaponFireRate, this, &AHA_Weapon::ResetCooldown, WeaponFireRate, false);
+	
 	GenerateShot(FVector(0, 0, 0));
 }
 

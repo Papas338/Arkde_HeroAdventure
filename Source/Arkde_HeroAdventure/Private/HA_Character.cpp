@@ -133,6 +133,7 @@ void AHA_Character::SetInitialPosition()
 	if (GetCharacterType() == EHA_CharacterType::CharacterType_Player)
 	{
 		SetActorLocation(GameInstanceReference->GetPlayerPosition());
+		KeyTags = GameInstanceReference->GetPlayerKeys();
 	}
 }
 
@@ -330,7 +331,7 @@ void AHA_Character::RestoreFriction()
 //Attacking
 void AHA_Character::Aiming()
 {
-	if (bIsUsingUltimate)
+	if (bIsUsingUltimate || bIsAiming)
 	{
 		return;
 	}
@@ -357,7 +358,7 @@ void AHA_Character::Aiming()
 
 void AHA_Character::StopAiming()
 {
-	if (bIsUsingUltimate)
+	if (bIsUsingUltimate || !bIsAiming)
 	{
 		return;
 	}
@@ -515,6 +516,10 @@ void AHA_Character::OnHealthChange(UHA_HealthComponent* ThisHealthComponent, AAc
 	}
 	if (HealthComponent->IsDead())
 	{
+		if (bIsUsingUltimate) 
+		{
+			FinishUltimate();
+		}
 		PlayVoiceSound(DeathSound);
 				
 		if (IsValid(GameModeReference) && !HasToDestroy())
@@ -527,7 +532,7 @@ void AHA_Character::OnHealthChange(UHA_HealthComponent* ThisHealthComponent, AAc
 
 void AHA_Character::UpdateUltimateCharge(float Value)
 {
-	if (!bIsUsingUltimate)
+	if (!bIsUsingUltimate && !HealthComponent->IsDead())
 	{
 		CurrentUltimateCharge = FMath::Clamp(CurrentUltimateCharge + Value, 0.0f, MaxUltimateCharge);
 		OnUltimateUpdateDelegate.Broadcast(CurrentUltimateCharge, MaxUltimateCharge);
@@ -561,14 +566,19 @@ void AHA_Character::UpdateUltimateDuration()
 	OnUltimateUpdateDelegate.Broadcast(CurrentUltimateDuration, MaxUltimateDuration);
 	if (CurrentUltimateDuration == 0)
 	{
-		bIsUsingUltimate = false;
-		OnUltimateReadyDelegate.Broadcast(false);
-		GetWorld()->GetTimerManager().ClearTimer(TimerHandle_Ultimate);
-		CurrentUltimateDuration = MaxUltimateDuration;
-		RestorePlayer();
-		UE_LOG(LogTemp, Warning, TEXT("Ultimate finished"))
+		FinishUltimate();
 	}
 	BP_UpdateUltimateDuration();
+}
+
+void AHA_Character::FinishUltimate()
+{
+	bIsUsingUltimate = false;
+	OnUltimateReadyDelegate.Broadcast(false);
+	GetWorld()->GetTimerManager().ClearTimer(TimerHandle_Ultimate);
+	CurrentUltimateDuration = MaxUltimateDuration;
+	RestorePlayer();
+	UE_LOG(LogTemp, Warning, TEXT("Ultimate finished"))
 }
 
 void AHA_Character::UltimateBehaviour()
@@ -644,6 +654,7 @@ void AHA_Character::AddKey(FName NewKey)
 {
 	//Adds the tag from a key to the character so the game can know that the player has picked it up
 	KeyTags.Add(NewKey);
+	GameInstanceReference->SetKeyToPlayer(NewKey);
 }
 
 bool AHA_Character::HasKey(FName Keytag)

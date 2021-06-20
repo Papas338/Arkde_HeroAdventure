@@ -28,6 +28,11 @@ void AHA_Weapon::Tick(float DeltaTime)
 //Executes functions related with every weapon when an attack is executed
 void AHA_Weapon::StartWeaponAction()
 {
+	if (bIsOnCooldown)
+	{
+		return;
+	}
+
 	PlaySound(WeaponSoundEffect);
 	BP_StartWeaponAction();
 }

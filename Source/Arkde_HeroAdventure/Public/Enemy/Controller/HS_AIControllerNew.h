@@ -10,6 +10,7 @@ class UBehaviorTree;
 class AHA_Enemy;
 class UBlackboardComponent;
 class UAIPerceptionComponent;
+class AHA_GameMode;
 
 /**
  * 
@@ -52,6 +53,9 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "AI controller")
 		AHA_Enemy* MyEnemy;
 
+	UPROPERTY(BlueprintReadOnly, Category = "References")
+		AHA_GameMode* GameModeReference;
+
 public:
 
 	AHS_AIControllerNew();
@@ -62,6 +66,9 @@ protected:
 
 	UFUNCTION()
 		void UpdateSenses(const TArray<AActor*>& UpdatedActors);
+
+	UFUNCTION()
+		void NotifyPlayerDeath();
 
 public:
 	void SetReceivingDamage(bool bNewState) { bReceivingDamage = bNewState; };

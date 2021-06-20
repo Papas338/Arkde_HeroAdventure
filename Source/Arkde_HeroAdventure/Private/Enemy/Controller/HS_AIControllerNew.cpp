@@ -8,6 +8,7 @@
 #include "AIModule/Classes/Blueprint/AIBlueprintHelperLibrary.h"
 #include "AIModule/Classes/Perception/AIPerceptionComponent.h"
 #include "Components/HA_HealthComponent.h"
+#include "Core/HA_GameMode.h"
 
 AHS_AIControllerNew::AHS_AIControllerNew()
 {
@@ -17,7 +18,7 @@ AHS_AIControllerNew::AHS_AIControllerNew()
 	CanSeePlayerKeyName = "bIsSeeingPlayer";
 	HasReceivedDamageKeyName = "bHasReceivedDamage";
 	TargetLocationKeyName = "TargetLocation";
-	IsPlayerAliveKeyName = "bIsPlayerAlive";
+	IsPlayerAliveKeyName = "bIsPlayerDead";
 }
 
 void AHS_AIControllerNew::BeginPlay()
@@ -25,6 +26,8 @@ void AHS_AIControllerNew::BeginPlay()
 	Super::BeginPlay();
 
 	AIPerceptionComponent->OnPerceptionUpdated.AddDynamic(this, &AHS_AIControllerNew::UpdateSenses);
+	GameModeReference = Cast<AHA_GameMode>(GetWorld()->GetAuthGameMode());
+	GameModeReference->OnGameOverDelegate.AddDynamic(this, &AHS_AIControllerNew::NotifyPlayerDeath);
 
 	if (IsValid(EnemyBehaviorTree))
 	{
@@ -70,7 +73,6 @@ void AHS_AIControllerNew::UpdateSenses(const TArray<AActor*>& UpdatedActors)
 
 					break;
 				case 1:
-					UE_LOG(LogTemp, Warning, TEXT("Ouch"))
 					MyBlackboard->SetValueAsBool(HasReceivedDamageKeyName, bReceivingDamage);
 					if (bReceivingDamage)
 					{
@@ -83,6 +85,11 @@ void AHS_AIControllerNew::UpdateSenses(const TArray<AActor*>& UpdatedActors)
 			}
 		}
 	}
+}
+
+void AHS_AIControllerNew::NotifyPlayerDeath()
+{
+	MyBlackboard->SetValueAsBool(IsPlayerAliveKeyName, true);
 }
 
 void AHS_AIControllerNew::DeactivateAIPerception()

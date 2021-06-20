@@ -69,7 +69,6 @@ void AHA_GameMode::Victory(AHA_Character* Character)
 void AHA_GameMode::GameOver(AHA_Character* Character)
 {
 	Character->GetMovementComponent()->StopMovementImmediately();
-	Character->GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		
 	ChangeToSpectatorCamera(Character, GameOverCamera);
 	Character->DisableInput(nullptr);
@@ -95,6 +94,17 @@ void AHA_GameMode::AddEnemyKilled()
 {
 	EnemiesKilled++;
 	OnEnemyKilledDelegate.Broadcast(EnemiesKilled);
+}
+
+void AHA_GameMode::PickUpOverlap(bool bIsOverlapping)
+{
+	if (bIsOverlapping) {
+		OnPlayerOverlapDelegate.Broadcast();
+	}
+	else
+	{
+		OnPlayerExitOverlapDelegate.Broadcast();
+	}
 }
 
 void AHA_GameMode::ChangeToSpectatorCamera(AHA_Character * Character, AHA_SpectatingCamera* SpectatorCamera)

@@ -21,6 +21,15 @@ AHA_Shotgun::AHA_Shotgun()
 void AHA_Shotgun::StartWeaponAction()
 {
 	Super::StartWeaponAction();
+	if (bIsOnCooldown)
+	{
+		return;
+	}
+	bIsOnCooldown = true;
+
+	GetWorld()->GetTimerManager().ClearTimer(TimerHandle_WeaponFireRate);
+
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle_WeaponFireRate, this, &AHA_Weapon::ResetCooldown, WeaponFireRate, false);
 
 	GenerateShot(FVector(0, 0, 0));
 	GenerateShot(FVector(0, 40, 0));
@@ -38,7 +47,6 @@ void AHA_Shotgun::StopWeaponAction()
 //Generates everything related with the shot, such as the damage dealer and particles that create a visual representation of it
 void AHA_Shotgun::GenerateShot(FVector Offset)
 {
-
 	FVector EyesLocation;
 	FRotator EyesRotation;
 	CurrentWeaponOwner->GetActorEyesViewPoint(EyesLocation, EyesRotation);

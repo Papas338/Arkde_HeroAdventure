@@ -15,6 +15,7 @@ class USoundCue;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEnemyKilledSignature, float, EnemiesKilledAmount);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGameStateChangeSignature);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAlertModeChangeSignature, bool, bIsAlertMode);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPlayerOverlapSignature);
 
 UCLASS()
 class ARKDE_HEROADVENTURE_API AHA_GameMode : public AGameModeBase
@@ -64,6 +65,12 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnEnemyKilledSignature OnEnemyKilledDelegate;
 
+	UPROPERTY(BlueprintAssignable)
+	FOnPlayerOverlapSignature OnPlayerOverlapDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnPlayerOverlapSignature OnPlayerExitOverlapDelegate;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -89,6 +96,8 @@ public:
 	void AddKeyToCharacter(AHA_Character* KeyOwner, FName KeyTag);
 
 	void AddEnemyKilled();
+
+	void PickUpOverlap(bool bIsOverlapping);
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void BP_Victory(AHA_Character* Character);

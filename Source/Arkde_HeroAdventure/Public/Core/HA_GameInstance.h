@@ -25,6 +25,9 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = "SaveData")
 		FVector PlayerPosition;
 
+	UPROPERTY(VisibleDefaultsOnly, Category = "SaveData")
+		TArray<FName> KeysOwned;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SaveSystem")
 		FString SaveSlotName;
 
@@ -46,6 +49,10 @@ public:
 	void SetPlayerPosition(FVector NewPosition) { PlayerPosition = NewPosition; };
 
 	FVector GetPlayerPosition() { return PlayerPosition; };
+
+	void SetKeyToPlayer(FName NewKey) { KeysOwned.Add(NewKey); };
+
+	TArray<FName> GetPlayerKeys() { return KeysOwned; };
 
 protected:
 

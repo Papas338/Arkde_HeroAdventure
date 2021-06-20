@@ -20,13 +20,21 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Damage")
 		float DamageDealt;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Damage")
 		TSubclassOf<UDamageType> DamageType;
 
 		ACharacter* CurrentWeaponOwner;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Audio")
 		USoundCue* WeaponSoundEffect;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Shooting")
+		bool bIsOnCooldown;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shooting")
+		float WeaponFireRate;
+
+	FTimerHandle TimerHandle_WeaponFireRate;
 
 public:	
 	// Sets default values for this actor's properties
@@ -54,4 +62,6 @@ public:
 	void SetWeaponOwner(ACharacter* WeaponOwner);
 
 	void PlaySound(USoundCue* SoundCue, bool bIs3DSound = false, FVector SoundOrigin = FVector::ZeroVector);
+
+	void ResetCooldown() { bIsOnCooldown = false; };
 };
