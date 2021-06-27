@@ -5,6 +5,7 @@
 #include "AIModule/Classes/Perception/AISense_Damage.h"
 #include "Enemy/Controller/HS_AIControllerNew.h"
 #include "Camera/CameraComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/HA_HealthComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Core/HA_GameMode.h"
@@ -56,6 +57,8 @@ void AHA_Enemy::HealthChanged(UHA_HealthComponent* CurrentHealthComponent, AActo
 
 	if (HealthComponent->IsDead() && !bIsSetToDespawn)
 	{
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
 		MyController->DeactivateAIPerception();
 
 		MyController->UnPossess();
