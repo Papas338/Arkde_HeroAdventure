@@ -525,6 +525,7 @@ void AHA_Character::OnHealthChange(UHA_HealthComponent* ThisHealthComponent, AAc
 		if (IsValid(GameModeReference) && !HasToDestroy())
 		{
 			GameModeReference->GameOver(this);
+			GameInstanceReference->ResetData();
 		}
 		
 	}
@@ -546,7 +547,7 @@ void AHA_Character::UpdateUltimateCharge(float Value)
 
 void AHA_Character::StartUltimate()
 {
-	if (bCanUseUltimate && !bIsUsingUltimate)
+	if (bCanUseUltimate && !bIsUsingUltimate && !bIsInSmallZone)
 	{
 		bIsUsingUltimate = true;
 		CurrentUltimateCharge = 0.0f;

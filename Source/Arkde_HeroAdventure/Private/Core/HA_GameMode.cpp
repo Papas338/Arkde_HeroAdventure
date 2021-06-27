@@ -158,7 +158,7 @@ void AHA_GameMode::CheckAlerts()
 			bIsInMaze = false;
 		}
 	}
-	OnAlertModeChangeDelegate.Broadcast(bIsInMaze);
+	OnMapZoneChangeDelegate.Broadcast(bIsInMaze);
 
 }
 

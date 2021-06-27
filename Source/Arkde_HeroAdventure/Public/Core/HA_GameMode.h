@@ -14,7 +14,7 @@ class USoundCue;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEnemyKilledSignature, float, EnemiesKilledAmount);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGameStateChangeSignature);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAlertModeChangeSignature, bool, bIsAlertMode);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMapZoneChangeSignature, bool, bIsAlertMode);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPlayerOverlapSignature);
 
 UCLASS()
@@ -60,7 +60,7 @@ public:
 	FOnGameStateChangeSignature OnGameOverDelegate;
 
 	UPROPERTY(BlueprintAssignable)
-	FOnAlertModeChangeSignature OnAlertModeChangeDelegate;
+	FOnMapZoneChangeSignature OnMapZoneChangeDelegate;
 
 	UPROPERTY(BlueprintAssignable)
 	FOnEnemyKilledSignature OnEnemyKilledDelegate;

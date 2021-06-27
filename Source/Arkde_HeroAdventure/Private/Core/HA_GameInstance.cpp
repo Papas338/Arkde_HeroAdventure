@@ -54,7 +54,7 @@ void UHA_GameInstance::LoadData()
 	}
 	else
 	{
-		SaveGameObject = UGameplayStatics::CreateSaveGameObject(UHS_SaveGame::StaticClass());
+		ResetData();
 	}
 	if (IsValid(SaveGameObject))
 	{

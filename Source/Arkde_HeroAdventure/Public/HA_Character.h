@@ -200,6 +200,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Audio")
 		USoundCue* UltimateSound;
 
+	UPROPERTY(BlueprintReadOnly, Category = "Ultimate")
+		bool bIsInSmallZone;
+
 public:
 
 	UPROPERTY(BlueprintAssignable)
@@ -349,5 +352,7 @@ public:
 	//Ultimate
 
 	void UpdateUltimateCharge(float Value);
+
+	void SetIsInSmallZone(bool bNewValue) { bIsInSmallZone = bNewValue; };
 
 };

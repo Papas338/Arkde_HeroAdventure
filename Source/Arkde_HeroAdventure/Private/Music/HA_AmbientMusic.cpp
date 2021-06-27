@@ -30,7 +30,7 @@ void AHA_AmbientMusic::BeginPlay()
 	{
 		GameModeReference->OnVictoryDelegate.AddDynamic(this, &AHA_AmbientMusic::StopLevelMusic);
 		GameModeReference->OnGameOverDelegate.AddDynamic(this, &AHA_AmbientMusic::StopLevelMusic);
-		GameModeReference->OnAlertModeChangeDelegate.AddDynamic(this, &AHA_AmbientMusic::ChangeLevelMusic);
+		GameModeReference->OnMapZoneChangeDelegate.AddDynamic(this, &AHA_AmbientMusic::ChangeLevelMusic);
 	}
 }
 

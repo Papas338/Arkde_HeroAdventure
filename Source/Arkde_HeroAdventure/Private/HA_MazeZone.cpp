@@ -35,6 +35,7 @@ void AHA_MazeZone::EnterZone(UPrimitiveComponent* OverlappedComponent, AActor* O
 	AHA_Character* PlayerCharacter = Cast<AHA_Character>(OtherActor);
 	if (IsValid(PlayerCharacter) && PlayerCharacter->GetCharacterType() == EHA_CharacterType::CharacterType_Player) {
 		bIsInZone = true;
+		PlayerCharacter->SetIsInSmallZone(bIsInZone);
 		GameModeReference->CheckAlerts();
 	}
 }
@@ -44,6 +45,7 @@ void AHA_MazeZone::ExitZone(UPrimitiveComponent* OverlappedComp, AActor* OtherAc
 	AHA_Character* PlayerCharacter = Cast<AHA_Character>(OtherActor);
 	if (IsValid(PlayerCharacter) && PlayerCharacter->GetCharacterType() == EHA_CharacterType::CharacterType_Player) {
 		bIsInZone = false;
+		PlayerCharacter->SetIsInSmallZone(bIsInZone);
 		GameModeReference->CheckAlerts();
 	}
 }
