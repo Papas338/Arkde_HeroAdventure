@@ -15,6 +15,4 @@ AHA_MainMenuMusic::AHA_MainMenuMusic()
 	RootComponent = MusicBillboardComponent;
 
 	MusicAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("MusicAudioComponent"));
-
 }
-

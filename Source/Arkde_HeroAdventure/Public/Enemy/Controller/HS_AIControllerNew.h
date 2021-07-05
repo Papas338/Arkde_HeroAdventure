@@ -29,6 +29,9 @@ protected:
 
 protected:
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AI")
+		FName IsPlayerAliveKeyName;
+
 	UPROPERTY(BlueprintReadWrite, Category = "AI controller")
 		bool bReceivingDamage;
 
@@ -43,9 +46,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AI controller")
 		FName TargetLocationKeyName;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AI")
-		FName IsPlayerAliveKeyName;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AI controller")
 		UBehaviorTree* EnemyBehaviorTree;

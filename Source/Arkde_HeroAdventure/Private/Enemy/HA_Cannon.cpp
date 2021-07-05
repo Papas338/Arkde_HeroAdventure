@@ -52,8 +52,6 @@ void AHA_Cannon::BeginPlay()
 		CannonTriggerReference = Cast<AHA_CannonsTrigger>(CannonTriggerActor);
 		CannonTriggerReference->OnCannonCollisionDelegate.AddDynamic(this, &AHA_Cannon::ActivateCannon);
 	}
-	
-
 }
 
 // Called every frame

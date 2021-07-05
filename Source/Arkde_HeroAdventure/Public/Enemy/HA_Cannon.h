@@ -31,13 +31,6 @@ protected:
 		USceneComponent* ShotLocation;
 
 protected:
-
-	UPROPERTY(BlueprintReadOnly, Category = "Rotation")
-		FVector PlayerPosition;
-
-	UPROPERTY(BlueprintReadOnly, Category = "Rotation")
-		FRotator PointingDirection;
-
 	UPROPERTY(BlueprintReadWrite, Category = "Cannon")
 		bool bIsBotAlived;
 
@@ -61,6 +54,12 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "References")
 		AHA_CannonsTrigger* CannonTriggerReference;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Rotation")
+		FVector PlayerPosition;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Rotation")
+		FRotator PointingDirection;
 
 public:
 	// Sets default values for this actor's properties

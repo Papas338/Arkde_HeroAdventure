@@ -18,6 +18,20 @@ class ARKDE_HEROADVENTURE_API AHA_ExplosiveBot : public AHA_Bot
 	GENERATED_BODY()
 	
 protected:
+	UPROPERTY(BlueprintReadOnly, Category = "Cannon")
+		AHA_Cannon* MyCannon;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Cannon")
+		float ShotStrenght;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effects")
+		float ExplosionDamage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effects")
+		UParticleSystem* ExplosionEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effects")
+		float ExplosionRadius;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Self Destruct")
 		bool bIsExploded;
@@ -25,25 +39,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Self Destruct")
 		bool bCountdownStarted;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effects")
-		float ExplosionDamage;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effects")
-		float ExplosionRadius;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Cannon")
-		float ShotStrenght;
-
 	FTimerHandle TimerHandle_SelfDamage;
 
 	UPROPERTY(BlueprintReadOnly, Category = "References")
 		AHA_Character* PlayerReference;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effects")
-		UParticleSystem* ExplosionEffect;
-
-	UPROPERTY(BlueprintReadOnly, Category = "Cannon")
-		AHA_Cannon* MyCannon;
 
 public:
 	AHA_ExplosiveBot();
@@ -61,10 +60,10 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION()
-		void Explode(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
+	void Explode(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
 
 	UFUNCTION()
-		void DamageTaken(UHA_HealthComponent* ThisHealthComponent, AActor * DamagedActor, float Damage, const UDamageType * DamageType, AController * InstigatedBy, AActor * DamageCauser);
+	void DamageTaken(UHA_HealthComponent* ThisHealthComponent, AActor * DamagedActor, float Damage, const UDamageType * DamageType, AController * InstigatedBy, AActor * DamageCauser);
 
 	void SetMyCannon(AHA_Cannon* NewCannon) { MyCannon = NewCannon; };
 };

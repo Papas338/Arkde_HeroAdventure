@@ -2,17 +2,17 @@
 
 
 #include "Enemy/HA_ExplosiveBot.h"
-#include "Particles/ParticleSystem.h"
-#include "Kismet/GameplayStatics.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/HA_HealthComponent.h"
-#include "HA_Character.h"
-#include "Weapons/HA_Weapon.h"
-#include "NavigationSystem/Public/NavigationSystem.h"
-#include "NavigationSystem/Public/NavigationPath.h"
 #include "DrawDebugHelpers.h"
 #include "Enemy/HA_Cannon.h"
+#include "Kismet/GameplayStatics.h"
+#include "HA_Character.h"
+#include "NavigationSystem/Public/NavigationSystem.h"
+#include "NavigationSystem/Public/NavigationPath.h"
+#include "Particles/ParticleSystem.h"
+#include "Weapons/HA_Weapon.h"
 
 AHA_ExplosiveBot::AHA_ExplosiveBot()
 {
@@ -33,6 +33,7 @@ void AHA_ExplosiveBot::BeginPlay()
 	HitBoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AHA_ExplosiveBot::Explode);
 	HealthComponent->OnHealthChangeDelegate.AddDynamic(this, &AHA_ExplosiveBot::DamageTaken);
 
+	//Finds the first point
 	NextPathPoint = GetNextPoint();
 
 	if (IsValid(MyCannon))
@@ -40,6 +41,24 @@ void AHA_ExplosiveBot::BeginPlay()
 		FVector ForceDirection;
 		ForceDirection = GetActorLocation() - MyCannon->GetActorLocation();
 		MeshComponent->AddImpulse(ForceDirection * ShotStrenght, NAME_None, true);
+	}
+}
+
+void AHA_ExplosiveBot::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	float DistanceToTarge = (NextPathPoint - GetActorLocation()).Size();
+	if (DistanceToTarge <= MinDistanceToTarget)
+	{
+		NextPathPoint = GetNextPoint();
+	}
+	else {
+		FVector ForceDirection = NextPathPoint - GetActorLocation();
+		ForceDirection.Normalize();
+		ForceDirection *= MovementSpeed;
+
+		MeshComponent->AddForce(ForceDirection, NAME_None, true);
 	}
 }
 
@@ -86,25 +105,6 @@ FVector AHA_ExplosiveBot::GetNextPoint()
 
 	return GetActorLocation();
 }
-
-void AHA_ExplosiveBot::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-	float DistanceToTarge = (NextPathPoint - GetActorLocation()).Size();
-	if (DistanceToTarge <= MinDistanceToTarget)
-	{
-		NextPathPoint = GetNextPoint();
-	}
-	else {
-		FVector ForceDirection = NextPathPoint - GetActorLocation();
-		ForceDirection.Normalize();
-		ForceDirection *= MovementSpeed;
-
-		MeshComponent->AddForce(ForceDirection, NAME_None, true);
-	}
-}
-
 
 void AHA_ExplosiveBot::Explode(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {

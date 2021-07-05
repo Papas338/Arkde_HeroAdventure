@@ -17,6 +17,7 @@ AHA_Goal::AHA_Goal()
 	GoalHitBoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 	GoalHitBoxComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 	RootComponent = GoalHitBoxComponent;
+
 	GoalMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GoalMeshComponent"));
 	GoalMeshComponent->SetupAttachment(RootComponent);
 	GoalMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);

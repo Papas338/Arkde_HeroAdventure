@@ -2,9 +2,9 @@
 
 
 #include "Core/HA_GameInstance.h"
+#include "Core/HA_SpawnPoint.h"
 #include "Kismet/GameplayStatics.h"
 #include "SaveSystem/HS_SaveGame.h"
-#include "Core/HA_SpawnPoint.h"
 
 UHA_GameInstance::UHA_GameInstance()
 {
@@ -37,8 +37,7 @@ void UHA_GameInstance::SaveData()
 				{
 					SaveFile->SetKeyToPlayer(KeyToAdd);
 				}
-			}			
-
+			}
 			UGameplayStatics::SaveGameToSlot(SaveFile,SaveSlotName, 0);
 		}
 	}

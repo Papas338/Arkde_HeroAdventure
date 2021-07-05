@@ -25,9 +25,7 @@ void AHA_Enemy::BeginPlay()
 
 	HealthComponent->OnHealthChangeDelegate.AddDynamic(this, &AHA_Enemy::HealthChanged);
 	MyController = Cast<AHS_AIControllerNew>(GetController());
-
-	
-	
+		
 	UUserWidget* UserWidget = WidgetHealthBarComponent->GetUserWidgetObject();
 	if (IsValid(UserWidget))
 	{

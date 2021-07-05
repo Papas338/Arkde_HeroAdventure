@@ -16,8 +16,7 @@ class ARKDE_HEROADVENTURE_API AHA_MobileExplosive : public APawn
 {
 	GENERATED_BODY()
 
-public:
-	
+public:	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 		USphereComponent* HitBoxComponent;
 
@@ -31,18 +30,14 @@ public:
 		UStaticMeshComponent* ExplosiveMesh;
 
 protected:
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Self Destruct")
-		bool bIsExploded;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Self Destruct")
-		bool bCountdownStarted;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effects")
 		float ExplosionDamage;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effects")
 		float ExplosionRadius;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effects")
+		UParticleSystem* ExplosionEffect;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement")
 		float MinDistanceToTarget;
@@ -50,16 +45,19 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement")
 		float ForceMagnitude;
 
-	FTimerHandle TimerHandle_SelfDamage;
+	UPROPERTY(BlueprintReadOnly, Category = "Path")
+		FVector NextPathPoint;
 
 	UPROPERTY(BlueprintReadOnly, Category = "References")
 		AHA_Character* PlayerReference;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effects")
-		UParticleSystem* ExplosionEffect;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Self Destruct")
+		bool bIsExploded;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Path")
-		FVector NextPathPoint;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Self Destruct")
+		bool bCountdownStarted;
+
+	FTimerHandle TimerHandle_SelfDamage;
 
 public:
 	// Sets default values for this pawn's properties

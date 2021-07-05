@@ -28,7 +28,6 @@ protected:
 	UWidgetComponent* WidgetHealthBarComponent;
 
 protected:
-
 	UPROPERTY(BlueprintReadOnly, Category = "AI")
 		AHS_AIControllerNew* MyController;
 

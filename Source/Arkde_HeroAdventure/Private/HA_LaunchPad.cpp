@@ -95,5 +95,3 @@ FVector AHA_LaunchPad::GetLaunchDirection()
  	LaunchDirection.Z = 1000;
 	return LaunchDirection;
 }
-
-

@@ -6,16 +6,16 @@
 #include "GameFramework/Character.h"
 #include "HA_Character.generated.h"
 
-class UCameraComponent;
-class USpringArmComponent;
 class UAudioComponent;
-class AHA_Weapon;
 class UAnimMontage;
 class UAnimInstance;
+class UCameraComponent;
 class UCapsuleComponent;
 class USoundCue;
-class UHA_HealthComponent;
+class USpringArmComponent;
 class AHA_GameMode;
+class AHA_Weapon;
+class UHA_HealthComponent;
 class UHA_UltimateAbilityComponent;
 class UHA_GameInstance;
 
@@ -304,6 +304,7 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	bool GetCanUseUltimate() { return bCanUseUltimate; };
 	
+	//Core
 	void ExitToMainMenu();
 
 	//Stats
@@ -345,14 +346,12 @@ public:
 
 	int GetAttackSelected() { return AttackSelected; };
 
+	//Sounds
 	void PlayStepSound();
 
 	void PlayVoiceSound(USoundCue* VoiceSound);
 
 	//Ultimate
-
 	void UpdateUltimateCharge(float Value);
-
 	void SetIsInSmallZone(bool bNewValue) { bIsInSmallZone = bNewValue; };
-
 };

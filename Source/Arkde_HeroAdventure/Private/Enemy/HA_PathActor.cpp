@@ -20,5 +20,3 @@ void AHA_PathActor::BeginPlay()
 	Super::BeginPlay();
 	
 }
-
-

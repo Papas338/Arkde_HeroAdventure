@@ -5,12 +5,12 @@
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/HA_HealthComponent.h"
-#include "Kismet/GameplayStatics.h"
+#include "DrawDebugHelpers.h"
 #include "Enemy/HA_Enemy.h"
+#include "HA_Character.h"
+#include "Kismet/GameplayStatics.h"
 #include "NavigationSystem/Public/NavigationSystem.h"
 #include "NavigationSystem/Public/NavigationPath.h"
-#include "DrawDebugHelpers.h"
-#include "HA_Character.h"
 
 AHA_HealingBot::AHA_HealingBot()
 {

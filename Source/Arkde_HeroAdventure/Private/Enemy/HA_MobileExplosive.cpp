@@ -5,13 +5,13 @@
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/HA_HealthComponent.h"
-#include "Particles/ParticleSystem.h"
-#include "Kismet/GameplayStatics.h"
+#include "DrawDebugHelpers.h"
 #include "HA_Character.h"
-#include "Weapons/HA_Weapon.h"
+#include "Kismet/GameplayStatics.h"
 #include "NavigationSystem/Public/NavigationSystem.h"
 #include "NavigationSystem/Public/NavigationPath.h"
-#include "DrawDebugHelpers.h"
+#include "Particles/ParticleSystem.h"
+#include "Weapons/HA_Weapon.h"
 
 // Sets default values
 AHA_MobileExplosive::AHA_MobileExplosive()
@@ -50,6 +50,25 @@ void AHA_MobileExplosive::BeginPlay()
 	HealthComponent->OnHealthChangeDelegate.AddDynamic(this, &AHA_MobileExplosive::DamageTaken);
 
 	NextPathPoint = GetNextPathPoint();
+}
+
+// Called every frame
+void AHA_MobileExplosive::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	float DistanceToTarge = (NextPathPoint - GetActorLocation()).Size();
+	if (DistanceToTarge <= MinDistanceToTarget)
+	{
+		NextPathPoint = GetNextPathPoint();
+	}
+	else {
+		FVector ForceDirection = NextPathPoint - GetActorLocation();
+		ForceDirection.Normalize();
+		ForceDirection *= ForceMagnitude;
+
+		ExplosiveMesh->AddForce(ForceDirection, NAME_None, true);
+	}
 }
 
 FVector AHA_MobileExplosive::GetNextPathPoint()
@@ -125,23 +144,3 @@ void AHA_MobileExplosive::DamageTaken(UHA_HealthComponent* ThisHealthComponent, 
 		SelfDestruct();
 	}
 }
-
-// Called every frame
-void AHA_MobileExplosive::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-	float DistanceToTarge = (NextPathPoint - GetActorLocation()).Size();
-	if (DistanceToTarge <= MinDistanceToTarget)
-	{
-		NextPathPoint = GetNextPathPoint();
-	}
-	else {
-		FVector ForceDirection = NextPathPoint - GetActorLocation();
-		ForceDirection.Normalize();
-		ForceDirection *= ForceMagnitude;
-
-		ExplosiveMesh->AddForce(ForceDirection, NAME_None, true);
-	}
-}
-

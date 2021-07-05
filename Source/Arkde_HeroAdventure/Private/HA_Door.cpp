@@ -15,10 +15,13 @@ AHA_Door::AHA_Door()
 	//ComponentInitialization
 	CustomRootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("CustomRootComponent"));
 	RootComponent = CustomRootComponent;
+
 	DoorComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorComponent"));
 	DoorComponent->SetupAttachment(CustomRootComponent);
+
 	DoorFrameComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorFrameComponent"));
 	DoorFrameComponent->SetupAttachment(CustomRootComponent);
+
 	OpenZoneComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("OpenZoneComponent"));
 	OpenZoneComponent->SetupAttachment(CustomRootComponent);
 	OpenZoneComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
@@ -63,18 +66,6 @@ void AHA_Door::CheckKeyFromPlayer(UPrimitiveComponent * OverlappedComponent, AAc
 		}
 	}
 }
-
-//Checks if the player it's close enough to open the door
-/*void AHA_Door::NotifyActorBeginOverlap(AActor * OtherActor)
-{
-	Super::NotifyActorBeginOverlap(OtherActor);
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, TEXT("Yep, definitely a door"));
-	if (!bIsOpen)
-	{
-		OpenDoor();
-	}
-	
-}*/
 
 //Opens the door
 void AHA_Door::OpenDoor()

@@ -2,11 +2,11 @@
 
 
 #include "Traps/HA_ExplosiveBarrel.h"
+#include "Components/BoxComponent.h"
 #include "Components/HA_HealthComponent.h"
 #include "Core/HA_GameMode.h"
-#include "Kismet/GameplayStatics.h"
-#include "Components/BoxComponent.h"
 #include "GameFramework/Actor.h"
+#include "Kismet/GameplayStatics.h"
 #include "Sound/Soundcue.h"
 
 AHA_ExplosiveBarrel::AHA_ExplosiveBarrel()

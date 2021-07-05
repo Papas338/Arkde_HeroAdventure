@@ -23,7 +23,6 @@ protected:
 		UAudioComponent* MusicAudioComponent;
 
 protected:
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Audio")
 	FName AlertParamName;
 
@@ -38,7 +37,6 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-
 	UFUNCTION()
 		void StopLevelMusic();
 

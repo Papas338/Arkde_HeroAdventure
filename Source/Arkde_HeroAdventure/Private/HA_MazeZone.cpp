@@ -49,5 +49,3 @@ void AHA_MazeZone::ExitZone(UPrimitiveComponent* OverlappedComp, AActor* OtherAc
 		GameModeReference->CheckAlerts();
 	}
 }
-
-

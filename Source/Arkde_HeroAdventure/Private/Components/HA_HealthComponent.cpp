@@ -30,10 +30,10 @@ void UHA_HealthComponent::UpdateInitialHealth()
 
 void UHA_HealthComponent::DamageTaken(AActor * DamagedActor, float Damage, const UDamageType * DamageType, AController * InstigatedBy, AActor * DamageCauser)
 {
+	// Damage applied if the healing bot is not healing
 	if (bBotActive)
 	{
 		Damage /= DamageReduction;
-		UE_LOG(LogTemp, Log, TEXT("Damage applied: %s"), *FString::SanitizeFloat(Damage))
 	}
 	CurrentHealth = FMath::Clamp(CurrentHealth - Damage, 0.0f, MaxHealth);
 
@@ -47,6 +47,7 @@ void UHA_HealthComponent::DamageTaken(AActor * DamagedActor, float Damage, const
 
 	if (bDebug)
 	{
+		UE_LOG(LogTemp, Log, TEXT("Damage applied: %s"), *FString::SanitizeFloat(Damage))
 		UE_LOG(LogTemp, Log, TEXT("My health is: %s"), *FString::SanitizeFloat(CurrentHealth))
 	}
 }

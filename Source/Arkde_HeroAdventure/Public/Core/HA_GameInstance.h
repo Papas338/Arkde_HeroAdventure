@@ -33,6 +33,7 @@ protected:
 
 public:
 
+	//Functions in charge of te save system
 	UFUNCTION(BlueprintCallable)
 		void SaveData();
 
@@ -42,6 +43,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void ResetData();
 
+	//Functions that control the data to be saved
 	void SetAreCannonsActive(bool NewState) { bAreCannonsActive = NewState; };
 
 	bool GetAreCannonsActive() { return bAreCannonsActive; };

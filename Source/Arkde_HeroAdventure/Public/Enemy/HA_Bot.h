@@ -19,6 +19,9 @@ class ARKDE_HEROADVENTURE_API AHA_Bot : public APawn
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+		UAudioComponent* TickSoundComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 		USphereComponent* HitBoxComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
@@ -27,12 +30,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 		UHA_HealthComponent* HealthComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-		UAudioComponent* TickSoundComponent;
-
 protected:
-	UPROPERTY(BlueprintReadOnly, Category = "Path")
-		FVector NextPathPoint;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Audio")
+		USoundCue* ExplosionSound;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement")
 		float MovementSpeed;
@@ -42,8 +42,8 @@ protected:
 
 	UMaterialInstanceDynamic* BotMaterial;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Audio")
-		USoundCue* ExplosionSound;	
+	UPROPERTY(BlueprintReadOnly, Category = "Path")
+		FVector NextPathPoint;
 
 public:
 	// Sets default values for this pawn's properties

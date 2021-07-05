@@ -71,11 +71,4 @@ void AHA_Landmine::TrapActive(UPrimitiveComponent * OverlappedComponent, AActor 
 	{
 		GameModeReference->DestroySceneObject(this, 0.1f);
 	}
-// 
-// 	ACharacter* thisCharacter = Cast<ACharacter>(OtherActor);
-// 	if (IsValid(thisCharacter))
-// 	{
-// 		thisCharacter->LaunchCharacter(FVector(0.0f, 150.0f, 0.0f),false,true);
-// 	}
 }
-

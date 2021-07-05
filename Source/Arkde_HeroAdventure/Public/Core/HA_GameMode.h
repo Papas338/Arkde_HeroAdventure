@@ -74,10 +74,12 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	//Camera control
 	void SetUpSpectatingCameras();
 
 	void ChangeToSpectatorCamera(AHA_Character* Character, AHA_SpectatingCamera* SpectatorCamera);
 
+	//Gamecore control
 	void BackToMainMenu();
 
 	void PlayMusic(USoundCue* GameMusic);
@@ -85,28 +87,32 @@ protected:
 public:
 	AHA_GameMode();
 
+	//Gamecore contorl
 	void CheckAlerts();
 
 	UFUNCTION()
 	void Victory(AHA_Character* Character);
-	UFUNCTION()
-	void GameOver(AHA_Character* Character);
 
+	UFUNCTION()
+	void GameOver(AHA_Character* Character); 
+	
+	UFUNCTION(BlueprintImplementableEvent)
+		void BP_Victory(AHA_Character* Character);
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void BP_GameOver(AHA_Character* Character);
+
+	UFUNCTION()
+		void DestroySceneObject(AActor* ThisActor, float TimeToDestroy);
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void BP_DestroySceneObject(AActor* ThisActor, float TimeToDestroy);
+
+	//Player information control
 	UFUNCTION()
 	void AddKeyToCharacter(AHA_Character* KeyOwner, FName KeyTag);
 
 	void AddEnemyKilled();
 
 	void PickUpOverlap(bool bIsOverlapping);
-
-	UFUNCTION(BlueprintImplementableEvent)
-	void BP_Victory(AHA_Character* Character);
-	UFUNCTION(BlueprintImplementableEvent)
-	void BP_GameOver(AHA_Character* Character);
-
-	UFUNCTION()
-	void DestroySceneObject(AActor* ThisActor, float TimeToDestroy);
-
-	UFUNCTION(BlueprintImplementableEvent)
-	void BP_DestroySceneObject(AActor* ThisActor, float TimeToDestroy);
 };

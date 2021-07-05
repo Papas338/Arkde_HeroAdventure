@@ -3,20 +3,20 @@
 
 #include "HA_Character.h"
 #include "Arkde_HeroAdventure/Arkde_HeroAdventure.h"
-#include "Components/SceneComponent.h"
 #include "Camera/CameraComponent.h"
-#include "GameFramework/SpringArmComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
+#include "Components/AudioComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/HA_HealthComponent.h"
-#include "Components/AudioComponent.h"
+#include "Components/HA_UltimateAbilityComponent.h"
+#include "Components/SceneComponent.h"
+#include "Core/HA_GameInstance.h"
 #include "Core/HA_GameMode.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 #include "Weapons/HA_Weapon.h"
 #include "Weapons/HA_Spear.h"
-#include "Kismet/GameplayStatics.h"
-#include "Components/HA_UltimateAbilityComponent.h"
-#include "Core/HA_GameInstance.h"
-#include "Sound/SoundCue.h"
 
 // Sets default values
 AHA_Character::AHA_Character()
@@ -102,9 +102,11 @@ void AHA_Character::Tick(float DeltaTime)
 }
 
 /*
-This section initialize values at the start of the game
-- InitializeVariables
-- InitializeReferences
+This section configure elements at the start of the game
+
+- InitializeVariables()
+- InitializeReferences()
+- SetInitialPosition()
 */
 void AHA_Character::InitializeVariables()
 {
@@ -144,7 +146,7 @@ Functions on this section are related with how the game receives player's input
 
 This function changes where the camera turns depending in if it's inverted o no:
 - SetupPlayerInputComponent()
-- AddControllerPitchInput(value) - This functions takes in the value from the input and inverts it if necessary
+- AddControllerPitchInput()
 */
 void AHA_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -197,8 +199,8 @@ In charge of jumping:
 - StopJumping()
 
 In charge of moving the player on the scene:
-- MoveForward(value) - This functions takes in the value from the input
-- MoveRight(value) - This functions takes in the value from the input
+- MoveForward()
+- MoveRight()
 - CalculateMovementDirection()
 - SetPlayerRotation()
 */
@@ -276,6 +278,13 @@ Attacking:
 - SetComboAvailable()
 - ResetCombo()
 
+Sound:
+- PlayStepSound()
+- PlayVoiceSound()
+
+Core:
+- ExitToMainMenu()
+
 Stats:
 - OnHealthChange()
 
@@ -284,7 +293,11 @@ Ultimate Ability:
 - StartUltimate()
 - StopUltimate()
 - UpdateUltimateDuration()
+- FinishUltimate()
 - UltimateBehaviour()
+- RestorePlayer()
+- RestoreMovement()
+- ShootCannon()
 */
 
 //General actions
